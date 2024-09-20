@@ -84,6 +84,7 @@ function enableInput() {
 
 // Load the system prompt from local storage on page load
 window.addEventListener('DOMContentLoaded', () => {
+  openIndexedDB(); // Open the database and create object stores if needed
   loadSystemPromptFromLocalStorage();
   updateChatHistoryDisplay();
 
@@ -167,7 +168,7 @@ async function sendMessageToAPI(userInput, systemPrompt) {
   try {
     // Get the selected LLM model
     const llmSelectElement = document.getElementById('llm-select');
-	const llm_selected = 'mistralai/mistral-nemo';
+	const llm_selected = 'nousresearch/hermes-3-llama-3.1-405b';
     //const llm_selected = llmSelectElement.value;
 
     // Get the last 5 chatbot responses
@@ -451,24 +452,21 @@ function updateWordCount(userInput, chatbotResponse) {
 
 async function openIndexedDB() {
   return new Promise((resolve, reject) => {
-    const request = window.indexedDB.open('chatbot-db', 2);
+    const request = window.indexedDB.open('chatbot-db', 2); // Use version 2
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
 
-      // Create the 'chat-messages' object store if it doesn't exist
+      // Create object stores if they do not exist
       if (!db.objectStoreNames.contains('chat-messages')) {
         db.createObjectStore('chat-messages', { keyPath: 'id', autoIncrement: true });
       }
-
-      // Create the 'major-event-content' object store if it doesn't exist
       if (!db.objectStoreNames.contains('major-event-content')) {
         db.createObjectStore('major-event-content', { keyPath: 'id', autoIncrement: true });
       }
-
-      // Create the 'major-stat-content' object store if it doesn't exist
       if (!db.objectStoreNames.contains('major-stat-content')) {
-        db.createObjectStore('major-stat-content', { keyPath: 'id', autoIncrement: true });
+        const objectStore = db.createObjectStore('major-stat-content', { keyPath: 'id', autoIncrement: true });
+        objectStore.createIndex('valueName', 'valueName', { unique: true });
       }
     };
 
@@ -698,16 +696,9 @@ async function storeMajorEventContentInIndexedDB(majorEventContent) {
 }
 
 
-////////////////////////////////
-// Function to get the last X responses from the chat history
 async function getLastXMajorEventContent() {
   try {
-    const dbRequest = window.indexedDB.open('chatbot-db', 2); // Use version 2
-
-    const db = await new Promise((resolve, reject) => {
-      dbRequest.onsuccess = (event) => resolve(event.target.result);
-      dbRequest.onerror = (event) => reject(event.target.error);
-    });
+    const db = await openIndexedDB(); // Ensure this is called to open the database and create object stores
 
     const transaction = db.transaction(['major-event-content'], 'readonly');
     const objectStore = transaction.objectStore('major-event-content');
@@ -718,9 +709,7 @@ async function getLastXMajorEventContent() {
       request.onerror = (event) => reject(event.target.error);
     });
 
-    // Extract only the content from the returned objects
-    const majorEventContents = allMessages.map(message => message.majorEventContent);
-    return majorEventContents;
+    return allMessages.map(message => message.majorEventContent); // Adjust as necessary
   } catch (error) {
     console.error('Error getting last major event content:', error);
     return [];
