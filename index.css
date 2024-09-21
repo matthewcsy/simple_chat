@@ -204,6 +204,7 @@ body {
 
   .input-area {
     flex-direction: column;
+	padding:0px;
     /* Stack input elements */
   }
 
