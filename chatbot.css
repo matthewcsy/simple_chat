@@ -201,8 +201,12 @@ body {
     width: 95%;
     /* Make textarea full width */
     height: 45px;
+	font-size: 16px; 
   }
 
+.input-area input {
+    font-size: 16px; /* Set font size to prevent zoom on focus */
+}
   .input-area button {
     width: 100%;
     /* Make button full width */
