@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot</title>
-  <link rel="stylesheet" href="chatbot_index.css">
+  <link rel="stylesheet" href="chatbot.css">
   <!-- Include Font Awesome CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
@@ -34,7 +34,7 @@
     </div>
 </div>
   <div class="header">
-    <i class="fas fa-comments"> m c  c h a t</i>
+    <i class="fas fa-comments"></i>
   </div>
 
   <div class="chatout-container">
@@ -74,6 +74,14 @@
           <span class="stats-label">Chatbot Response:</span>
           <span class="stats-value" id="chatbot-response-stats">0 words</span>
         </div>
+      </div>
+      <div class="major-event-container">
+        <h3>Major Events:</h3>
+        <div id="major-event-content"></div>
+      </div>
+      <div class="major-stat-container">
+        <h3>Major Stats:</h3>
+        <div id="major-stat-content"></div>
       </div>
       <div class="llm-container">
         <label for="llm-select">Select LLM Model:</label>

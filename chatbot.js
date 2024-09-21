@@ -1,21 +1,22 @@
 // Function to toggle the system prompt textarea
 function toggleAdditionInfo() {
-  document.querySelector('.system-prompt-container').classList.toggle('show');
-  document.querySelector('.wordcount-container').classList.toggle('show');
-  document.querySelector('.major-event-container').classList.toggle('show');
-  document.querySelector('.major-stat-container').classList.toggle('show');
-  document.querySelector('.llm-container').classList.toggle('show');
-  document.querySelector('.btn-container').classList.toggle('show');
-  document.querySelector('.toggle-container').classList.toggle('active');
-  const chatHistoryContainer = document.getElementById('chat-history');
-    if (chatHistoryContainer) {
-      const lastMessage = chatHistoryContainer.lastElementChild;
-      if (lastMessage) {
-        lastMessage.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-}
+    const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
 
+    document.querySelector('.system-prompt-container').classList.toggle('show');
+    document.querySelector('.wordcount-container').classList.toggle('show');
+    
+    // Check if the current page is chatbot.html before toggling
+    if (currentPage === 'chatbot.html') {
+        document.querySelector('.major-event-container').classList.toggle('show');
+        document.querySelector('.major-stat-container').classList.toggle('show');
+    }
+
+    document.querySelector('.llm-container').classList.toggle('show');
+    document.querySelector('.btn-container').classList.toggle('show');
+    document.querySelector('.toggle-container').classList.toggle('active');
+    
+    scrollToLastMessage();
+}
 // Function to format the message text with markdown-like syntax
 function formatMessage(message) {
   // Replace bold text
@@ -27,86 +28,213 @@ function formatMessage(message) {
 
 // Function to send a message to the chatbot
 function sendMessage() {
-  const userInput = document.getElementById('user-input').value;
-  document.getElementById('user-input').value = '';
+    const userInput = document.getElementById('user-input').value;
+    document.getElementById('user-input').value = '';
 
-  // Disable input and button
-  disableInput();
+    // Disable input and button
+    disableInput();
 
-  if (userInput === '') {
-    return;
-  }
+    if (userInput === '') {
+        enableInput(); // Re-enable if input is empty
+        return;
+    }
 
-  const systemPrompt = document.getElementById('system-prompt-textarea').value.trim();
+    const systemPrompt = document.getElementById('system-prompt-textarea').value.trim();
 
-  const userMessageElement = document.createElement('div');
-  userMessageElement.classList.add('user-message');
-  userMessageElement.innerHTML = formatMessage(userInput);
-  document.getElementById('chatbot-messages').appendChild(userMessageElement);
+    const userMessageElement = document.createElement('div');
+    userMessageElement.classList.add('user-message');
+    userMessageElement.innerHTML = formatMessage(userInput);
+    document.getElementById('chatbot-messages').appendChild(userMessageElement);
 
-  // Scroll to the last user message
-  userMessageElement.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to the last user message
+    scrollToLastMessage(userMessageElement);
 
-  // Call the sendMessageToAPI function from the chatbot-api.js file
-  sendMessageToAPI(userInput, systemPrompt);
+    // Call the sendMessageToAPI function from the chatbot-api.js file
+    sendMessageToAPI(userInput, systemPrompt).then(() => {
+        // After the API call, enable the input again
+        enableInput();
+    });
 }
 
 function disableInput() {
-  const inputField = document.getElementById('user-input');
-  const sendButton = document.querySelector('.input-area button'); // Select the button directly
+    const inputField = document.getElementById('user-input');
+    const sendButton = document.querySelector('.input-area button'); // This should work with your structure
 
-  if (inputField && sendButton) {
-    inputField.disabled = true;
-    sendButton.disabled = true;
+    if (inputField && sendButton) {
+        inputField.disabled = true; // Disable the textarea
+        sendButton.disabled = true;  // Disable the button
 
-    inputField.classList.add('disabled');
-    sendButton.classList.add('disabled');
-  } else {
-    console.error('Input field or send button not found.');
-  }
+        inputField.classList.add('disabled'); // Optional: Add class for styling
+        sendButton.classList.add('disabled'); // Optional: Add class for styling
+    } else {
+        console.error('Input field or send button not found.');
+    }
 }
 
 function enableInput() {
-  const inputField = document.getElementById('user-input');
-  const sendButton = document.querySelector('.input-area button'); // Select the button directly
+    const inputField = document.getElementById('user-input');
+    const sendButton = document.querySelector('.input-area button');
 
-  if (inputField && sendButton) {
-    inputField.disabled = false;
-    sendButton.disabled = false;
+    if (inputField && sendButton) {
+        inputField.disabled = false; // Re-enable the textarea
+        sendButton.disabled = false;  // Re-enable the button
 
-    inputField.classList.remove('disabled');
-    sendButton.classList.remove('disabled');
-  } else {
-    console.error('Input field or send button not found.');
-  }
+        inputField.classList.remove('disabled'); // Optional: Remove class for styling
+        sendButton.classList.remove('disabled'); // Optional: Remove class for styling
+    } else {
+        console.error('Input field or send button not found.');
+    }
+}
+
+// Function to initialize the PIN input and keypad
+// Function to initialize the PIN input and keypad
+function initializePinInput() {
+    const pinContainer = document.getElementById('pin-container');
+    if (!pinContainer) {
+        console.error('PIN container not found.');
+        return; // Exit if the container doesn't exist
+    }
+
+    pinContainer.style.display = 'block';
+
+    const keys = document.querySelectorAll('.key');
+    const pinBoxes = document.querySelectorAll('.pin-box');
+    let pinIndex = 0;
+
+    // Function to handle key press for PIN entry
+    function handleKeyPress(event) {
+        const key = event.key;
+        if (pinIndex < 4 && /^[0-9]$/.test(key)) { // Check if key is a number
+            pinBoxes[pinIndex].value = key; // Set the value in the corresponding pin box
+            pinIndex++;
+            if (pinIndex === 4) {
+                handlePinSubmit(getPin()); // Automatically submit the PIN
+            }
+        }
+    }
+
+    // Add event listener for keydown
+    document.addEventListener('keydown', handleKeyPress);
+
+    keys.forEach(key => {
+        key.addEventListener('click', () => {
+            if (pinIndex < 4) {
+                pinBoxes[pinIndex].value = key.getAttribute('data-value');
+                pinIndex++;
+            }
+            if (pinIndex === 4) {
+                handlePinSubmit(getPin()); // Automatically submit the PIN
+            }
+        });
+    });
+}
+
+// Function to get the entered PIN
+function getPin() {
+    return Array.from(document.querySelectorAll('.pin-box')).map(box => box.value).join('');
+}
+
+let OPENROUTER_API_KEY; // Declare the variable to hold the reconstructed key
+
+// Function to handle PIN submission
+async function handlePinSubmit(pin) {
+    const pinHash = await sha256(pin); // Wait for the hash to be generated
+    const reconstructedKey = reconstructApiKey(pinHash);
+    
+    OPENROUTER_API_KEY = reconstructedKey; // Assign the reconstructed key to the variable
+
+    console.log(`PIN: ${pin}`);
+    console.log(`PIN Hash: ${pinHash}`);
+    console.log(`Reconstructed API Key: ${OPENROUTER_API_KEY}`);
+    
+    // Hide PIN input after submission
+    document.getElementById('pin-container').style.display = 'none';
+}
+
+// Function to reconstruct the OPENROUTER_API_KEY
+function reconstructApiKey(pinHash) {
+    // Determine the masked key based on the current HTML file
+    let maskedKey;
+    const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
+
+    if (currentPage === 'index.html') {
+        //cc49091e6a3fa59a5d4f8f9d4a420ff47d7bfaabae08f666fe5d698712b1d326
+		maskedKey = 'sk-or-v1-a844d4fd60de7e874d#9#25###b5aecc366500fb59fd252acad50461426c3613'; // Key for index.html
+    } else if (currentPage === 'chatbot.html') {
+        maskedKey = 'sk-or-v1-7#f96cd507607d0cf9947e4f2efec14165#71fdecd545d2#979644a2cb6ec3a2'; // Key for chatbot.html
+    } else {
+        console.error('No masked key found for this page.');
+        return null; // Handle case where no key is found
+    }
+
+    let reconstructedKey = '';
+    let hashIndex = 0; // Track the position in the pinHash
+
+    for (const char of maskedKey) {
+        if (char === '#') {
+            reconstructedKey += pinHash[hashIndex]; // Use the sequential character from pinHash
+            hashIndex++; // Move to the next character in pinHash
+        } else {
+            reconstructedKey += char; // Keep the original character
+        }
+    }
+
+    return reconstructedKey;
+}
+
+// Updated SHA-256 hash function to return a hex string
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);                   
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);     
+    const hashArray = Array.from(new Uint8Array(hashBuffer));                
+    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join(''); 
+    return hashHex; // Return hash as a hex string
 }
 
 
 // Load the system prompt from local storage on page load
+// Function to initialize the chatbot features
+function initializeChatbot() {
+    openIndexedDB(); // Open the database and create object stores if needed
+    loadSystemPromptFromLocalStorage();
+    updateChatHistoryDisplay();
+    scrollToLastMessage();
+    setupInputField();
+}
+
+// Function to scroll to the last message in chat history
+// Function to scroll to the last message in chatbot-messages or chat-history
+// Function to scroll to the last message in chatbot-messages or chat-history
+function scrollToLastMessage() {
+    const chatbotMessagesContainer = document.getElementById('chatbot-messages');
+    const chatHistoryContainer = document.getElementById('chat-history');
+
+    // Check if there are chatbot messages
+    if (chatbotMessagesContainer && chatbotMessagesContainer.lastElementChild) {
+        const lastChatbotMessage = chatbotMessagesContainer.lastElementChild;
+        lastChatbotMessage.scrollIntoView({ behavior: 'smooth' });
+    } else if (chatHistoryContainer && chatHistoryContainer.lastElementChild) {
+        const lastMessage = chatHistoryContainer.lastElementChild;
+        lastMessage.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+// Function to set up the input field to handle Enter key
+function setupInputField() {
+    const inputField = document.getElementById('user-input');
+    inputField.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent the default action (e.g., a new line)
+            sendMessage(); // Call the sendMessage function
+        }
+    });
+}
+
+// Call the initialization functions on DOM content loaded
 window.addEventListener('DOMContentLoaded', () => {
-  openIndexedDB(); // Open the database and create object stores if needed
-  loadSystemPromptFromLocalStorage();
-  updateChatHistoryDisplay();
-
-  const chatHistoryContainer = document.getElementById('chat-history');
-  if (chatHistoryContainer) {
-    const lastMessage = chatHistoryContainer.lastElementChild;
-    if (lastMessage) {
-      lastMessage.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  const inputField = document.getElementById('user-input');
-  inputField.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent the default action (e.g., a new line)
-      sendMessage(); // Call the sendMessage function
-    }
-  });
+    initializeChatbot();
+    initializePinInput(); // Initialize the PIN input
 });
 
-// Replace with your actual OpenRouter API key
-const OPENROUTER_API_KEY = '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';
 
 // Replace with your site URL
 const YOUR_SITE_URL = 'https://your-site.com';
@@ -168,7 +296,7 @@ async function sendMessageToAPI(userInput, systemPrompt) {
   try {
     // Get the selected LLM model
     const llmSelectElement = document.getElementById('llm-select');
-	const llm_selected = 'nousresearch/hermes-3-llama-3.1-405b';
+	const llm_selected = 'nousresearch/hermes-3-llama-3.1-70b';
     //const llm_selected = llmSelectElement.value;
 
     // Get the last 5 chatbot responses
@@ -225,15 +353,22 @@ ${lastXMajorEventContent.join('\n')}`;
     document.getElementById('chatbot-messages').appendChild(chatbotMessageElement);
 	
     // Scroll the last chatbot message into view
-    chatbotMessageElement.scrollIntoView({ behavior: 'smooth' });
+    scrollToLastMessage();
 
     // Store the chat data in IndexedDB
     await storeChatInIndexedDB(userInput, data.choices[0].message.content);
 
     // Update the word counts
     updateWordCount(userInput, data.choices[0].message.content);
-	postAPIsystemAction(data.choices[0].message.content,'major-event-content');
-	postAPIsystemAction(data.choices[0].message.content,'major-stat-content');
+
+const currentPage = window.location.pathname.split('/').pop();
+        if (currentPage === 'chatbot.html') {
+            await postAPIsystemAction(data.choices[0].message.content, 'major-event-content');
+            await postAPIsystemAction(data.choices[0].message.content, 'major-stat-content');
+        }
+
+
+
 	enableInput();
 
     // Store the additional data in browser values
@@ -245,7 +380,7 @@ ${lastXMajorEventContent.join('\n')}`;
     errorMessageElement.classList.add('chatbot-message', 'error-message');
     errorMessageElement.textContent = `Error: ${error.message}`;
     document.getElementById('chatbot-messages').appendChild(errorMessageElement);
-	chatbotMessageElement.scrollIntoView({ behavior: 'smooth' });
+	scrollToLastMessage();
 
   }
 }
@@ -433,20 +568,24 @@ function wordCount(text) {
 
 
 function updateWordCount(userInput, chatbotResponse) {
-  const userInputWordCount = wordCount(userInput);
-  const chatbotResponseWordCount = wordCount(chatbotResponse);
+    const userInputWordCount = wordCount(userInput);
+    const chatbotResponseWordCount = wordCount(chatbotResponse);
 
-  // Update the user input word count
-  const userInputStatsElement = document.getElementById('user-input-stats');
-  if (userInputStatsElement) {
-    userInputStatsElement.textContent = `${userInputWordCount} words`;
-  }
+    // Get token counts using LlamaTokenizer
+    const userInputTokenCount = llamaTokenizer.encode(userInput).length;
+    const chatbotResponseTokenCount = llamaTokenizer.encode(chatbotResponse).length;
 
-  // Update the chatbot response word count
-  const chatbotResponseStatsElement = document.getElementById('chatbot-response-stats');
-  if (chatbotResponseStatsElement) {
-    chatbotResponseStatsElement.textContent = `${chatbotResponseWordCount} words`;
-  }
+    // Update the user input word count
+    const userInputStatsElement = document.getElementById('user-input-stats');
+    if (userInputStatsElement) {
+        userInputStatsElement.textContent = `${userInputWordCount} words, ${userInputTokenCount} tokens`;
+    }
+
+    // Update the chatbot response word count
+    const chatbotResponseStatsElement = document.getElementById('chatbot-response-stats');
+    if (chatbotResponseStatsElement) {
+        chatbotResponseStatsElement.textContent = `${chatbotResponseWordCount} words, ${chatbotResponseTokenCount} tokens`;
+    }
 }
 
 
