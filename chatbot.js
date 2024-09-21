@@ -17,7 +17,7 @@ function toggleAdditionInfo() {
     }
     
     // Check if the current page is chatbot.html before toggling
-    if (currentPage === 'chatbot.html') {
+    if (currentPage === 'mc.html') {
         const majorEventContainer = document.querySelector('.major-event-container');
         const majorStatContainer = document.querySelector('.major-stat-container');
         
