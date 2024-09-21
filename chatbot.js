@@ -754,14 +754,20 @@ async function postAPIsystemAction(userInput, scenario) {
             console.log('Stored major event content in IndexedDB');
         }
 
-        // Update the corresponding HTML element
-        if (scenario === 'major-event-content') {
-            document.getElementById('major-event-content').textContent = apiResponse.choices[0].message.content;
-            console.log('Updated major-event-content element');
-        } else if (scenario === 'major-stat-content') {
-            document.getElementById('major-stat-content').textContent = apiResponse.choices[0].message.content;
-            console.log('Updated major-stat-content element');
-        }
+// Update the corresponding HTML element
+if (scenario === 'major-event-content') {
+    const majorEventContentElement = document.getElementById('major-event-content');
+    if (majorEventContentElement) {
+        majorEventContentElement.textContent = apiResponse.choices[0].message.content;
+        console.log('Updated major-event-content element');
+    }
+} else if (scenario === 'major-stat-content') {
+    const majorStatContentElement = document.getElementById('major-stat-content');
+    if (majorStatContentElement) {
+        majorStatContentElement.textContent = apiResponse.choices[0].message.content;
+        console.log('Updated major-stat-content element');
+    }
+}
 
         return apiResponse;
     } catch (error) {
