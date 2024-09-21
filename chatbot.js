@@ -157,8 +157,7 @@ function reconstructApiKey(pinHash) {
     let maskedKey;
     const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
 
-    if (currentPage === 'index.html') {
-        //cc49091e6a3fa59a5d4f8f9d4a420ff47d7bfaabae08f666fe5d698712b1d326
+    if (currentPage === '' || currentPage === 'index.html') {
 		maskedKey = 'sk-or-v1-a844d4fd60de7e874d#9#25###b5aecc366500fb59fd252acad50461426c3613'; // Key for index.html
     } else if (currentPage === 'chatbot.html') {
         maskedKey = 'sk-or-v1-7#f96cd507607d0cf9947e4f2efec14165#71fdecd545d2#979644a2cb6ec3a2'; // Key for chatbot.html
@@ -660,7 +659,7 @@ async function postAPIsystemAction(userInput, scenario) {
       const lastXMajorStatContent = await getLastXMajorStatContent();
 
       if (Array.isArray(lastXMajorStatContent) && lastXMajorStatContent.length > 0) {
-        updatedSystemPrompt = `You a strict prompt analyzer. Below are some major statistics between characters in their previous relationship. Based on the dialogue, is there some action that is worth noting as a statistic? For example, number of kisses, number of dinners, locations they have been to? Reply only as ## Statistic Name: Number ##. If the dialogue has no key moment, reply with a @@@@. Here are the previous statistics: ${lastXMajorStatContent.join('\n')}`;
+        updatedSystemPrompt = `You a strict prompt analyzer. Below are some major statistics between characters in their previous relationship. Based on the dialogue, is there some action that is worth noting as a statistic? For example, number of kisses, number of dinners, locations they have been to? Reply only as ## Statistic : Name: Number ##. If the dialogue has no key moment, reply with a @@@@. Here are the previous statistics: ${lastXMajorStatContent.join('\n')}`;
       } else {
         console.log('No valid statistics found. Using default prompt.');
         updatedSystemPrompt = `You a strict prompt analyzer. Below are some major statistics between characters in their previous relationship. Based on the dialogue, is there some action that is worth noting as a statistic? For example, number of kisses, number of dinners, locations they have been to? Reply only as ## Statistic Name: Number ##.`;
