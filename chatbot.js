@@ -1,21 +1,21 @@
 // Function to toggle the system prompt textarea
 function toggleAdditionInfo() {
-    const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
+  const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
 
-    document.querySelector('.system-prompt-container').classList.toggle('show');
-    document.querySelector('.wordcount-container').classList.toggle('show');
-    
-    // Check if the current page is chatbot.html before toggling
-    if (currentPage === 'chatbot.html') {
-        document.querySelector('.major-event-container').classList.toggle('show');
-        document.querySelector('.major-stat-container').classList.toggle('show');
-    }
+  document.querySelector('.system-prompt-container').classList.toggle('show');
+  document.querySelector('.wordcount-container').classList.toggle('show');
 
-    document.querySelector('.llm-container').classList.toggle('show');
-    document.querySelector('.btn-container').classList.toggle('show');
-    document.querySelector('.toggle-container').classList.toggle('active');
-    
-    scrollToLastMessage();
+  // Check if the current page is chatbot.html before toggling
+  if (currentPage === 'chatbot.html') {
+    document.querySelector('.major-event-container').classList.toggle('show');
+    document.querySelector('.major-stat-container').classList.toggle('show');
+  }
+
+  document.querySelector('.llm-container').classList.toggle('show');
+  document.querySelector('.btn-container').classList.toggle('show');
+  document.querySelector('.toggle-container').classList.toggle('active');
+
+  scrollToLastMessage();
 }
 // Function to format the message text with markdown-like syntax
 function formatMessage(message) {
@@ -28,210 +28,214 @@ function formatMessage(message) {
 
 // Function to send a message to the chatbot
 function sendMessage() {
-    const userInput = document.getElementById('user-input').value;
-    document.getElementById('user-input').value = '';
+  const userInput = document.getElementById('user-input').value;
+  document.getElementById('user-input').value = '';
 
-    // Disable input and button
-    disableInput();
+  // Disable input and button
+  disableInput();
 
-    if (userInput === '') {
-        enableInput(); // Re-enable if input is empty
-        return;
-    }
+  if (userInput === '') {
+    enableInput(); // Re-enable if input is empty
+    return;
+  }
 
-    const systemPrompt = document.getElementById('system-prompt-textarea').value.trim();
+  const systemPrompt = document.getElementById('system-prompt-textarea').value.trim();
 
-    const userMessageElement = document.createElement('div');
-    userMessageElement.classList.add('user-message');
-    userMessageElement.innerHTML = formatMessage(userInput);
-    document.getElementById('chatbot-messages').appendChild(userMessageElement);
+  const userMessageElement = document.createElement('div');
+  userMessageElement.classList.add('user-message');
+  userMessageElement.innerHTML = formatMessage(userInput);
+  document.getElementById('chatbot-messages').appendChild(userMessageElement);
+  const blankDefaultElement = document.getElementById('blank_default');
+  if (blankDefaultElement) {
+    blankDefaultElement.style.display = 'none'; // Only hide if the element exists
+	}
 
-    // Scroll to the last user message
-    scrollToLastMessage(userMessageElement);
+  // Scroll to the last user message
+  scrollToLastMessage(userMessageElement);
 
-    // Call the sendMessageToAPI function from the chatbot-api.js file
-    sendMessageToAPI(userInput, systemPrompt).then(() => {
-        // After the API call, enable the input again
-        enableInput();
-    });
+  // Call the sendMessageToAPI function from the chatbot-api.js file
+  sendMessageToAPI(userInput, systemPrompt).then(() => {
+    // After the API call, enable the input again
+    enableInput();
+  });
 }
 
 function disableInput() {
-    const inputField = document.getElementById('user-input');
-    const sendButton = document.querySelector('.input-area button'); // This should work with your structure
+  const inputField = document.getElementById('user-input');
+  const sendButton = document.querySelector('.input-area button'); // This should work with your structure
 
-    if (inputField && sendButton) {
-        inputField.disabled = true; // Disable the textarea
-        sendButton.disabled = true;  // Disable the button
+  if (inputField && sendButton) {
+    inputField.disabled = true; // Disable the textarea
+    sendButton.disabled = true;  // Disable the button
 
-        inputField.classList.add('disabled'); // Optional: Add class for styling
-        sendButton.classList.add('disabled'); // Optional: Add class for styling
-    } else {
-        console.error('Input field or send button not found.');
-    }
+    inputField.classList.add('disabled'); // Optional: Add class for styling
+    sendButton.classList.add('disabled'); // Optional: Add class for styling
+  } else {
+    console.error('Input field or send button not found.');
+  }
 }
 
 function enableInput() {
-    const inputField = document.getElementById('user-input');
-    const sendButton = document.querySelector('.input-area button');
+  const inputField = document.getElementById('user-input');
+  const sendButton = document.querySelector('.input-area button');
 
-    if (inputField && sendButton) {
-        inputField.disabled = false; // Re-enable the textarea
-        sendButton.disabled = false;  // Re-enable the button
+  if (inputField && sendButton) {
+    inputField.disabled = false; // Re-enable the textarea
+    sendButton.disabled = false;  // Re-enable the button
 
-        inputField.classList.remove('disabled'); // Optional: Remove class for styling
-        sendButton.classList.remove('disabled'); // Optional: Remove class for styling
-    } else {
-        console.error('Input field or send button not found.');
-    }
+    inputField.classList.remove('disabled'); // Optional: Remove class for styling
+    sendButton.classList.remove('disabled'); // Optional: Remove class for styling
+  } else {
+    console.error('Input field or send button not found.');
+  }
 }
 
 // Function to initialize the PIN input and keypad
 // Function to initialize the PIN input and keypad
 function initializePinInput() {
-    const pinContainer = document.getElementById('pin-container');
-    if (!pinContainer) {
-        console.error('PIN container not found.');
-        return; // Exit if the container doesn't exist
+  const pinContainer = document.getElementById('pin-container');
+  if (!pinContainer) {
+    console.error('PIN container not found.');
+    return; // Exit if the container doesn't exist
+  }
+
+  pinContainer.style.display = 'block';
+
+  const keys = document.querySelectorAll('.key');
+  const pinBoxes = document.querySelectorAll('.pin-box');
+  let pinIndex = 0;
+
+  // Function to handle key press for PIN entry
+  function handleKeyPress(event) {
+    const key = event.key;
+    if (pinIndex < 4 && /^[0-9]$/.test(key)) { // Check if key is a number
+      pinBoxes[pinIndex].value = key; // Set the value in the corresponding pin box
+      pinIndex++;
+      if (pinIndex === 4) {
+        handlePinSubmit(getPin()); // Automatically submit the PIN
+      }
     }
+  }
 
-    pinContainer.style.display = 'block';
+  // Add event listener for keydown
+  document.addEventListener('keydown', handleKeyPress);
 
-    const keys = document.querySelectorAll('.key');
-    const pinBoxes = document.querySelectorAll('.pin-box');
-    let pinIndex = 0;
-
-    // Function to handle key press for PIN entry
-    function handleKeyPress(event) {
-        const key = event.key;
-        if (pinIndex < 4 && /^[0-9]$/.test(key)) { // Check if key is a number
-            pinBoxes[pinIndex].value = key; // Set the value in the corresponding pin box
-            pinIndex++;
-            if (pinIndex === 4) {
-                handlePinSubmit(getPin()); // Automatically submit the PIN
-            }
-        }
-    }
-
-    // Add event listener for keydown
-    document.addEventListener('keydown', handleKeyPress);
-
-    keys.forEach(key => {
-        key.addEventListener('click', () => {
-            if (pinIndex < 4) {
-                pinBoxes[pinIndex].value = key.getAttribute('data-value');
-                pinIndex++;
-            }
-            if (pinIndex === 4) {
-                handlePinSubmit(getPin()); // Automatically submit the PIN
-            }
-        });
+  keys.forEach(key => {
+    key.addEventListener('click', () => {
+      if (pinIndex < 4) {
+        pinBoxes[pinIndex].value = key.getAttribute('data-value');
+        pinIndex++;
+      }
+      if (pinIndex === 4) {
+        handlePinSubmit(getPin()); // Automatically submit the PIN
+      }
     });
+  });
 }
 
 // Function to get the entered PIN
 function getPin() {
-    return Array.from(document.querySelectorAll('.pin-box')).map(box => box.value).join('');
+  return Array.from(document.querySelectorAll('.pin-box')).map(box => box.value).join('');
 }
 
 let OPENROUTER_API_KEY; // Declare the variable to hold the reconstructed key
 
 // Function to handle PIN submission
 async function handlePinSubmit(pin) {
-    const pinHash = await sha256(pin); // Wait for the hash to be generated
-    const reconstructedKey = reconstructApiKey(pinHash);
-    
-    OPENROUTER_API_KEY = reconstructedKey; // Assign the reconstructed key to the variable
+  const pinHash = await sha256(pin); // Wait for the hash to be generated
+  const reconstructedKey = reconstructApiKey(pinHash);
 
-    console.log(`PIN: ${pin}`);
-    console.log(`PIN Hash: ${pinHash}`);
-    console.log(`Reconstructed API Key: ${OPENROUTER_API_KEY}`);
-    
-    // Hide PIN input after submission
-    document.getElementById('pin-container').style.display = 'none';
+  OPENROUTER_API_KEY = reconstructedKey; // Assign the reconstructed key to the variable
+
+  console.log(`PIN: ${pin}`);
+  console.log(`PIN Hash: ${pinHash}`);
+  console.log(`Reconstructed API Key: ${OPENROUTER_API_KEY}`);
+
+  // Hide PIN input after submission
+  document.getElementById('pin-container').style.display = 'none';
 }
 
 // Function to reconstruct the OPENROUTER_API_KEY
+
+
 function reconstructApiKey(pinHash) {
-    // Determine the masked key based on the current HTML file
-    let maskedKey;
-    const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
+  // Determine the masked key based on the current HTML file
+  let maskedKey;
+  const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
 
-    if (currentPage === '' || currentPage === 'index.html') {
-		maskedKey = 'sk-or-v1-a844d4fd60de7e874d#9#25###b5aecc366500fb59fd252acad50461426c3613'; // Key for index.html
-    } else if (currentPage === 'chatbot.html') {
-        maskedKey = 'sk-or-v1-7#f96cd507607d0cf9947e4f2efec14165#71fdecd545d2#979644a2cb6ec3a2'; // Key for chatbot.html
+  if (currentPage === '' || currentPage === 'index.html') {
+    maskedKey = 'sk-or-v1-a844d4fd60de7e874d#9#25###b5aecc366500fb59fd252acad50461426c3613'; // Key for index.html
+  } else if (currentPage === 'chatbot.html') {
+    maskedKey = 'sk-or-v1-7#f96cd507607d0cf9947e4f2efec14165#71fdecd545d2#979644a2cb6ec3a2'; // Key for chatbot.html
+  } else {
+    console.error('No masked key found for this page.');
+    return null; // Handle case where no key is found
+  }
+
+  let reconstructedKey = '';
+  let hashIndex = 0; // Track the position in the pinHash
+
+  for (const char of maskedKey) {
+    if (char === '#') {
+      reconstructedKey += pinHash[hashIndex]; // Use the sequential character from pinHash
+      hashIndex++; // Move to the next character in pinHash
     } else {
-        console.error('No masked key found for this page.');
-        return null; // Handle case where no key is found
+      reconstructedKey += char; // Keep the original character
     }
+  }
 
-    let reconstructedKey = '';
-    let hashIndex = 0; // Track the position in the pinHash
-
-    for (const char of maskedKey) {
-        if (char === '#') {
-            reconstructedKey += pinHash[hashIndex]; // Use the sequential character from pinHash
-            hashIndex++; // Move to the next character in pinHash
-        } else {
-            reconstructedKey += char; // Keep the original character
-        }
-    }
-
-    return reconstructedKey;
+  return reconstructedKey;
 }
 
 // Updated SHA-256 hash function to return a hex string
 async function sha256(message) {
-    const msgBuffer = new TextEncoder().encode(message);                   
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);     
-    const hashArray = Array.from(new Uint8Array(hashBuffer));                
-    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join(''); 
-    return hashHex; // Return hash as a hex string
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+  return hashHex; // Return hash as a hex string
 }
 
 
-// Load the system prompt from local storage on page load
 // Function to initialize the chatbot features
 function initializeChatbot() {
-    openIndexedDB(); // Open the database and create object stores if needed
-    loadSystemPromptFromLocalStorage();
-    updateChatHistoryDisplay();
-    scrollToLastMessage();
-    setupInputField();
+  openIndexedDB(); // Open the database and create object stores if needed
+  loadSystemPromptFromLocalStorage();
+  updateChatHistoryDisplay();
+  scrollToLastMessage();
+  setupInputField();
 }
 
-// Function to scroll to the last message in chat history
-// Function to scroll to the last message in chatbot-messages or chat-history
+
 // Function to scroll to the last message in chatbot-messages or chat-history
 function scrollToLastMessage() {
-    const chatbotMessagesContainer = document.getElementById('chatbot-messages');
-    const chatHistoryContainer = document.getElementById('chat-history');
+  const chatbotMessagesContainer = document.getElementById('chatbot-messages');
+  const chatHistoryContainer = document.getElementById('chat-history');
 
-    // Check if there are chatbot messages
-    if (chatbotMessagesContainer && chatbotMessagesContainer.lastElementChild) {
-        const lastChatbotMessage = chatbotMessagesContainer.lastElementChild;
-        lastChatbotMessage.scrollIntoView({ behavior: 'smooth' });
-    } else if (chatHistoryContainer && chatHistoryContainer.lastElementChild) {
-        const lastMessage = chatHistoryContainer.lastElementChild;
-        lastMessage.scrollIntoView({ behavior: 'smooth' });
-    }
+  // Check if there are chatbot messages
+  if (chatbotMessagesContainer && chatbotMessagesContainer.lastElementChild) {
+    const lastChatbotMessage = chatbotMessagesContainer.lastElementChild;
+    lastChatbotMessage.scrollIntoView({ behavior: 'smooth' });
+  } else if (chatHistoryContainer && chatHistoryContainer.lastElementChild) {
+    const lastMessage = chatHistoryContainer.lastElementChild;
+    lastMessage.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 // Function to set up the input field to handle Enter key
 function setupInputField() {
-    const inputField = document.getElementById('user-input');
-    inputField.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent the default action (e.g., a new line)
-            sendMessage(); // Call the sendMessage function
-        }
-    });
+  const inputField = document.getElementById('user-input');
+  inputField.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the default action (e.g., a new line)
+      sendMessage(); // Call the sendMessage function
+    }
+  });
 }
 
 // Call the initialization functions on DOM content loaded
 window.addEventListener('DOMContentLoaded', () => {
-    initializeChatbot();
-    initializePinInput(); // Initialize the PIN input
+  initializeChatbot();
+  initializePinInput(); // Initialize the PIN input
 });
 
 
@@ -239,7 +243,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const YOUR_SITE_URL = 'https://your-site.com';
 
 // Replace with your site name
-const YOUR_SITE_NAME = 'MyChatbot';
+const YOUR_SITE_NAME = window.location.pathname.split('/').pop() === 'chatbot.html' ? 'Private_chatbot' : 'Share_Chatbot';
 
 // Chatbot API endpoint
 const chatbotApiUrl = 'https://openrouter.ai/api/v1/chat/completions';
@@ -288,33 +292,32 @@ async function storeChatInIndexedDB(userInput, chatbotResponse) {
 }
 
 // Function to send a message to the chatbot API
-// Store the API responses with sequential IDs
 let apiResponses = [];
 
 async function sendMessageToAPI(userInput, systemPrompt) {
   try {
     // Get the selected LLM model
     const llmSelectElement = document.getElementById('llm-select');
-	const llm_selected = 'nousresearch/hermes-3-llama-3.1-70b';
+    const llm_selected = 'nousresearch/hermes-3-llama-3.1-70b';
     //const llm_selected = llmSelectElement.value;
 
     // Get the last 5 chatbot responses
     const lastXResponses = await getLastXResponses(5);
-	
-	// Get the last 5 major event contents
+
+    // Get the last 5 major event contents
     const lastXMajorEventContent = await getLastXMajorEventContent();
 
 
 
     // Append 
-	
-	const updatedSystemPrompt = `${systemPrompt}
+
+    const updatedSystemPrompt = `${systemPrompt}
 \n\nHere are the last 5 responses from the chatbot:
 ${lastXResponses.join('\n')}
 
 \nHere are the last 5 major event contents:
 ${lastXMajorEventContent.join('\n')}`;
-	
+
 
 
     // Prepare the request payload
@@ -325,7 +328,7 @@ ${lastXMajorEventContent.join('\n')}`;
         { "role": "user", "content": userInput }
       ]
     };
-  console.log('Chat SP: '+updatedSystemPrompt);
+    console.log('Chat SP: ' + updatedSystemPrompt);
     // Make the API call to the OpenRouter API
     const response = await fetch(chatbotApiUrl, {
       method: 'POST',
@@ -350,7 +353,7 @@ ${lastXMajorEventContent.join('\n')}`;
     chatbotMessageElement.classList.add('chatbot-message');
     chatbotMessageElement.innerHTML = formatMessage(data.choices[0].message.content);
     document.getElementById('chatbot-messages').appendChild(chatbotMessageElement);
-	
+
     // Scroll the last chatbot message into view
     scrollToLastMessage();
 
@@ -360,26 +363,26 @@ ${lastXMajorEventContent.join('\n')}`;
     // Update the word counts
     updateWordCount(userInput, data.choices[0].message.content);
 
-const currentPage = window.location.pathname.split('/').pop();
-        if (currentPage === 'chatbot.html') {
-            await postAPIsystemAction(data.choices[0].message.content, 'major-event-content');
-            await postAPIsystemAction(data.choices[0].message.content, 'major-stat-content');
-        }
+    const currentPage = window.location.pathname.split('/').pop();
+    if (currentPage === 'chatbot.html') {
+      await postAPIsystemAction(data.choices[0].message.content, 'major-event-content');
+      await postAPIsystemAction(data.choices[0].message.content, 'major-stat-content');
+    }
 
 
 
-	enableInput();
+    enableInput();
 
     // Store the additional data in browser values
     localStorage.setItem('system-prompt', systemPrompt);
-	
+
   } catch (error) {
     console.error('Error:', error);
     const errorMessageElement = document.createElement('div');
     errorMessageElement.classList.add('chatbot-message', 'error-message');
     errorMessageElement.textContent = `Error: ${error.message}`;
     document.getElementById('chatbot-messages').appendChild(errorMessageElement);
-	scrollToLastMessage();
+    scrollToLastMessage();
 
   }
 }
@@ -415,27 +418,9 @@ async function getLastXResponses(x) {
 // Function to load chat history from IndexedDB
 async function loadChatHistoryFromIndexedDB() {
   try {
-    const dbRequest = await new Promise((resolve, reject) => {
-      const request = window.indexedDB.open('chatbot-db', 2);
+    const db = await openIndexedDB();
 
-      request.onsuccess = (event) => {
-        resolve(event.target.result);
-      };
-
-      request.onerror = (event) => {
-        console.error('Error opening IndexedDB database:', event.target.error);
-        reject(event.target.error);
-      };
-
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains('chat-messages')) {
-          db.createObjectStore('chat-messages', { keyPath: 'id', autoIncrement: true });
-        }
-      };
-    });
-
-    const transaction = dbRequest.transaction(['chat-messages'], 'readonly');
+    const transaction = db.transaction(['chat-messages'], 'readonly');
     const objectStore = transaction.objectStore('chat-messages');
 
     const chatMessages = await new Promise((resolve, reject) => {
@@ -457,7 +442,7 @@ async function loadChatHistoryFromIndexedDB() {
   }
 }
 
-
+// Function to update the chat history display on the UI.
 async function updateChatHistoryDisplay() {
   const chatHistory = await loadChatHistoryFromIndexedDB();
   displayChatHistory(chatHistory);
@@ -466,19 +451,24 @@ async function updateChatHistoryDisplay() {
 // Function to display the chat history
 function displayChatHistory(chatHistory) {
   const chatHistoryContainer = document.getElementById('chat-history');
-  chatHistoryContainer.innerHTML = '';
+  chatHistoryContainer.innerHTML = ''; // Clear existing content
 
-  chatHistory.forEach(message => {
-    const userMessageElement = document.createElement('div');
-    userMessageElement.classList.add('chat-message', 'user-message');
-    userMessageElement.textContent = message.userInput;
-    chatHistoryContainer.appendChild(userMessageElement);
+  if (chatHistory.length === 0) {
+    // Display a message if there are no chat messages
+    chatHistoryContainer.innerHTML = '<div id="blank_default">Welcome. Please type and send a messsage.</div>';
+  } else {
+    chatHistory.forEach(message => {
+      const userMessageElement = document.createElement('div');
+      userMessageElement.classList.add('chat-message', 'user-message');
+      userMessageElement.textContent = message.userInput;
+      chatHistoryContainer.appendChild(userMessageElement);
 
-    const botMessageElement = document.createElement('div');
-    botMessageElement.classList.add('chat-message', 'chatbot-message');
-    botMessageElement.textContent = message.chatbotResponse;
-    chatHistoryContainer.appendChild(botMessageElement);
-  });
+      const botMessageElement = document.createElement('div');
+      botMessageElement.classList.add('chat-message', 'chatbot-message');
+      botMessageElement.textContent = message.chatbotResponse;
+      chatHistoryContainer.appendChild(botMessageElement);
+    });
+  }
 }
 
 // Function to clear the chat history
@@ -489,10 +479,10 @@ async function clearChatHistory() {
 
     // Clear the 'chat-messages' object store
     const db = await new Promise((resolve, reject) => {
-      dbRequest.onsuccess = function(event) {
+      dbRequest.onsuccess = function (event) {
         resolve(event.target.result);
       };
-      dbRequest.onerror = function(event) {
+      dbRequest.onerror = function (event) {
         reject(event.target.errorCode);
       };
     });
@@ -506,9 +496,9 @@ async function clearChatHistory() {
     await updateChatHistoryDisplay();
 
     const chatbotmessagesContainer = document.getElementById('chatbot-messages');
-  if (chatbotmessagesContainer) {
-    chatbotmessagesContainer.innerHTML = '';
-  }
+    if (chatbotmessagesContainer) {
+      chatHistoryContainer.innerHTML = '<div id="blank_default">Welcome. Please type and send a messsage.</div>';
+    }
 
     console.log('Chat history cleared');
   } catch (error) {
@@ -516,6 +506,7 @@ async function clearChatHistory() {
   }
 }
 
+// Function to count the number of words in a given text.
 function wordCount(text) {
   if (typeof text === 'string') {
     // Remove leading/trailing whitespace
@@ -567,24 +558,24 @@ function wordCount(text) {
 
 
 function updateWordCount(userInput, chatbotResponse) {
-    const userInputWordCount = wordCount(userInput);
-    const chatbotResponseWordCount = wordCount(chatbotResponse);
+  const userInputWordCount = wordCount(userInput);
+  const chatbotResponseWordCount = wordCount(chatbotResponse);
 
-    // Get token counts using LlamaTokenizer
-    const userInputTokenCount = llamaTokenizer.encode(userInput).length;
-    const chatbotResponseTokenCount = llamaTokenizer.encode(chatbotResponse).length;
+  // Get token counts using LlamaTokenizer
+  const userInputTokenCount = llamaTokenizer.encode(userInput).length;
+  const chatbotResponseTokenCount = llamaTokenizer.encode(chatbotResponse).length;
 
-    // Update the user input word count
-    const userInputStatsElement = document.getElementById('user-input-stats');
-    if (userInputStatsElement) {
-        userInputStatsElement.textContent = `${userInputWordCount} words, ${userInputTokenCount} tokens`;
-    }
+  // Update the user input word count
+  const userInputStatsElement = document.getElementById('user-input-stats');
+  if (userInputStatsElement) {
+    userInputStatsElement.textContent = `${userInputWordCount} words, ${userInputTokenCount} tokens`;
+  }
 
-    // Update the chatbot response word count
-    const chatbotResponseStatsElement = document.getElementById('chatbot-response-stats');
-    if (chatbotResponseStatsElement) {
-        chatbotResponseStatsElement.textContent = `${chatbotResponseWordCount} words, ${chatbotResponseTokenCount} tokens`;
-    }
+  // Update the chatbot response word count
+  const chatbotResponseStatsElement = document.getElementById('chatbot-response-stats');
+  if (chatbotResponseStatsElement) {
+    chatbotResponseStatsElement.textContent = `${chatbotResponseWordCount} words, ${chatbotResponseTokenCount} tokens`;
+  }
 }
 
 
@@ -604,7 +595,27 @@ async function openIndexedDB() {
       }
       if (!db.objectStoreNames.contains('major-stat-content')) {
         const objectStore = db.createObjectStore('major-stat-content', { keyPath: 'id', autoIncrement: true });
-        objectStore.createIndex('valueName', 'valueName', { unique: true });
+        objectStore.createIndex('valueName', 'valueName', { unique: true }); // Create index for valueName
+
+        // Populate initial values if the store is empty
+        const initialStats = [
+          { valueName: 'kiss', value: 0 },
+          { valueName: 'dinner', value: 0 },
+          { valueName: 'hugs', value: 0 },
+          { valueName: 'sex', value: 0 },
+          { valueName: 'dates', value: 0 },
+          { valueName: 'vacations', value: 0 },
+          { valueName: 'gifts', value: 0 },
+          { valueName: 'movies', value: 0 },
+          { valueName: 'surprises', value: 0 },
+          { valueName: 'laugh', value: 0 },
+          { valueName: 'cum_in_body', value: 0 }
+        ];
+
+        for (const stat of initialStats) {
+          objectStore.add(stat); // Add initial stats to the store
+        }
+        console.log('Initial major-stat-content populated');
       }
     };
 
@@ -643,135 +654,87 @@ function parseInput(input) {
 }
 
 async function postAPIsystemAction(userInput, scenario) {
-  try {
-    console.log('Post API: ' + scenario + ' \n', userInput);
+    try {
+        console.log('Post API: ' + scenario + ' \n', userInput);
 
-    const llm_selected = 'mistralai/mistral-nemo';
+        const llm_selected = 'mistralai/mistral-nemo';
 
-    // Prepare the updated system prompt based on the scenario
-    let updatedSystemPrompt;
+        // Prepare the updated system prompt based on the scenario
+        let updatedSystemPrompt;
 
-    if (scenario === 'major-event-content') {
-      const lastXMajorEventContent = await getLastXMajorEventContent();
-      updatedSystemPrompt = `You a strict prompt analyzer. Here are some major talking points before. Based on the dialogue, please answer if this is a new event or a continuation of previous dialogue? If it is a new talking point, provide a 10~15 word summary based on existing input. If the dialogue continues the previous point, reply with a ####. Here are the previous events: ${lastXMajorEventContent.join('\n')}`;
+        if (scenario === 'major-event-content') {
+            const lastXMajorEventContent = await getLastXMajorEventContent();
+            updatedSystemPrompt = `You are a strict prompt analyzer. Based on the dialogue, determine if it’s a new event or a continuation of previous dialogue. If it’s new, provide a 10-15 word summary. If it continues, reply with #####. Here are the previous events: ${lastXMajorEventContent.join('\n')}`;
 
-    } else if (scenario === 'major-stat-content') {
-      const lastXMajorStatContent = await getLastXMajorStatContent();
+        } else if (scenario === 'major-stat-content') {
+            const lastXMajorStatContent = await getLastXMajorStatContent();
 
-      if (Array.isArray(lastXMajorStatContent) && lastXMajorStatContent.length > 0) {
-        updatedSystemPrompt = `You a strict prompt analyzer. Below are some major statistics between characters in their previous relationship. Based on the dialogue, is there some action that is worth noting as a statistic? For example, number of kisses, number of dinners, locations they have been to? Reply only as ## Statistic : Name: Number ##. If the dialogue has no key moment, reply with a @@@@. Here are the previous statistics: ${lastXMajorStatContent.join('\n')}`;
-      } else {
-        console.log('No valid statistics found. Using default prompt.');
-        updatedSystemPrompt = `You a strict prompt analyzer. Below are some major statistics between characters in their previous relationship. Based on the dialogue, is there some action that is worth noting as a statistic? For example, number of kisses, number of dinners, locations they have been to? Reply only as ## Statistic Name: Number ##.`;
-      }
+            if (lastXMajorStatContent) {
+                updatedSystemPrompt = `You are a strict prompt analyzer. Analyze the statistics of characters' previous relationship based on the dialogue. Provide notable actions as statistics only. Format Example: Kiss: 0, Dinner: 1. No descriptions or explanations.Here are the previous statistics:\n${lastXMajorStatContent}`;
+            } else {
+                console.log('No valid statistics found. Using default prompt.');
+            }
+        } else {
+            throw new Error('Invalid scenario provided');
+        }
 
-    } else {
-      throw new Error('Invalid scenario provided');
+        // Prepare the request payload
+        const requestPayload = {
+            "model": llm_selected,
+            "messages": [
+                { "role": "system", "content": updatedSystemPrompt },
+                { "role": "user", "content": userInput }
+            ]
+        };
+
+        console.log('systemprompt: ' + updatedSystemPrompt);
+
+        // Make the API call to the OpenRouter API
+        const response = await fetch(chatbotApiUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                'HTTP-Referer': YOUR_SITE_URL,
+                'X-Title': YOUR_SITE_NAME,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestPayload)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`HTTP error ${response.status}: ${errorData.error.message}`);
+        }
+
+        const apiResponse = await response.json();
+        console.log('PostAPI Event response:', apiResponse.choices[0].message.content);
+
+        // Update statistics from the API response
+        await updateStatisticsFromLLMResponse(apiResponse.choices[0].message.content);
+
+        // Store the updated major-event-content in IndexedDB
+        if (scenario === 'major-event-content') {
+            await storeMajorEventContentInIndexedDB(apiResponse.choices[0].message.content);
+            console.log('Stored major event content in IndexedDB');
+        }
+
+        // Update the corresponding HTML element
+        if (scenario === 'major-event-content') {
+            document.getElementById('major-event-content').textContent = apiResponse.choices[0].message.content;
+            console.log('Updated major-event-content element');
+        } else if (scenario === 'major-stat-content') {
+            document.getElementById('major-stat-content').textContent = apiResponse.choices[0].message.content;
+            console.log('Updated major-stat-content element');
+        }
+
+        return apiResponse;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
     }
-
-    // Prepare the request payload
-    const requestPayload = {
-      "model": llm_selected,
-      "messages": [
-        { "role": "system", "content": updatedSystemPrompt },
-        { "role": "user", "content": userInput }
-      ]
-    };
-
-    console.log('systemprompt: ' + updatedSystemPrompt);
-
-    // Make the API call to the OpenRouter API
-    const response = await fetch(chatbotApiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'HTTP-Referer': YOUR_SITE_URL,
-        'X-Title': YOUR_SITE_NAME,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestPayload)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`HTTP error ${response.status}: ${errorData.error.message}`);
-    }
-
-    const apiResponse = await response.json();
-
-    console.log('PostAPI Event response:', apiResponse.choices[0].message.content);
-
-    // Store the updated major-event-content or major-stat-content in IndexedDB
-    if (scenario === 'major-event-content') {
-      await storeMajorEventContentInIndexedDB(apiResponse.choices[0].message.content);
-      console.log('Stored major event content in IndexedDB');
-    } else if (scenario === 'major-stat-content') {
-      console.log('Try to Store Stat: ' + apiResponse.choices[0].message.content);
-      const result = parseInput(apiResponse.choices[0].message.content);
-
-      if (result) {
-        await storeMajorStatInIndexedDB(result.valueName, result.value);
-      } else {
-        console.log('No valid data extracted or input dropped.');
-      }
-      console.log('Stored major stat content in IndexedDB');
-    }
-
-    // Update the corresponding HTML element
-    if (scenario === 'major-event-content') {
-      document.getElementById('major-event-content').textContent = apiResponse.choices[0].message.content;
-      console.log('Updated major-event-content element');
-    } else if (scenario === 'major-stat-content') {
-      document.getElementById('major-stat-content').textContent = apiResponse.choices[0].message.content;
-      console.log('Updated major-stat-content element');
-    }
-
-    // Return the API response
-    return apiResponse;
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
 }
 
 
-async function loadMajorContentFromIndexedDB() {
-  try {
-    // Open the IndexedDB database
-    const db = await openIndexedDB();
-
-    // Load major event content
-    const eventTransaction = db.transaction(['major-event-content'], 'readonly');
-    const eventObjectStore = eventTransaction.objectStore('major-event-content');
-    const majorEventContent = await new Promise((resolve, reject) => {
-      const request = eventObjectStore.getAll();
-      request.onsuccess = (event) => {
-        resolve(event.target.result);
-      };
-      request.onerror = (event) => {
-        reject(event.target.error);
-      };
-    });
-
-    // Load major stat content
-    const statTransaction = db.transaction(['major-stat-content'], 'readonly');
-    const statObjectStore = statTransaction.objectStore('major-stat-content');
-    const majorStatContent = await new Promise((resolve, reject) => {
-      const request = statObjectStore.getAll();
-      request.onsuccess = (event) => {
-        resolve(event.target.result);
-      };
-      request.onerror = (event) => {
-        reject(event.target.error);
-      };
-    });
-
-    return { majorEventContent, majorStatContent };
-  } catch (error) {
-    console.error('Error loading major content from IndexedDB:', error);
-    return { majorEventContent: [], majorStatContent: [] };
-  }
-}
 
 
 
@@ -779,16 +742,16 @@ async function loadMajorContentFromIndexedDB() {
 
 async function storeMajorEventContentInIndexedDB(majorEventContent) {
   try {
-	  // Filter out the phrase "New event" (case insensitive)
+    // Filter out the phrase "New event" (case insensitive)
     majorEventContent = majorEventContent.replace(/new event/gi, '').trim();
-	
+
     // Check if the input contains "##"
     if (majorEventContent.includes("##")) {
       console.log('Previously Event, not stored');
       return; // Exit the function without storing
     }
-	
-	
+
+
 
     // Trim the content if it exceeds 80 characters
     if (majorEventContent.length > 80) {
@@ -854,23 +817,28 @@ async function getLastXMajorEventContent() {
   }
 }
 
+async function updateStatisticsFromLLMResponse(llmResponse) {
+    // Regular expression to match statistics in the format "Name: Value"
+    const regex = /(\w+):\s*(\d+)/g;
+    let match;
+
+    // Loop through all matches in the LLM response
+    while ((match = regex.exec(llmResponse)) !== null) {
+        const valueName = match[1].trim().toLowerCase(); // Normalize key
+        const value = parseInt(match[2], 10); // Convert value to integer
+
+        // Update the statistic in IndexedDB
+        await storeMajorStatInIndexedDB(valueName, value);
+    }
+
+    console.log('Statistics updated in IndexedDB based on LLM response.');
+}
+
 
 async function storeMajorStatInIndexedDB(valueName, value) {
   try {
     // Normalize valueName: lowercase and no spaces
     const normalizedValueName = valueName.toLowerCase().replace(/\s+/g, '');
-
-    // Check if the value exceeds 80 characters
-    if (value.length > 80) {
-      const trimmedValue = value.slice(0, 80).trim();
-      const lastSpaceIndex = trimmedValue.lastIndexOf(' ');
-
-      if (lastSpaceIndex !== -1) {
-        value = trimmedValue.slice(0, lastSpaceIndex);
-      } else {
-        value = trimmedValue;
-      }
-    }
 
     // Open the IndexedDB database
     const dbRequest = await new Promise((resolve, reject) => {
@@ -901,8 +869,8 @@ async function storeMajorStatInIndexedDB(valueName, value) {
     });
 
     if (existingEntry) {
-      // Update the existing entry
-      existingEntry.value = value; // Update the value
+      // Update the existing entry's value
+      existingEntry.value += value; // Increment the value
       await objectStore.put(existingEntry); // Use put to update
       console.log('Major stat updated in IndexedDB');
     } else {
@@ -914,8 +882,10 @@ async function storeMajorStatInIndexedDB(valueName, value) {
     await transaction.complete;
   } catch (error) {
     console.error('Error storing Major stat in IndexedDB:', error);
-}
   }
+}
+
+
 
 async function getLastXMajorStatContent() {
   try {
@@ -935,10 +905,13 @@ async function getLastXMajorStatContent() {
       request.onerror = (event) => reject(event.target.error);
     });
 
-    // Ensure that allStats is an array and format the output
-    return Array.isArray(allStats) ? allStats.map(stat => `${stat.valueName}:${stat.value}`).join('; ') : [];
+    // Format output into a readable string
+    const validStats = allStats.map(stat => `${stat.valueName.replace(/([A-Z])/g, ' $1').trim()}: ${stat.value}`);
+    const readableStats = validStats.join('\n'); // Join with newline for readability
+
+    return readableStats; // Return the formatted string
   } catch (error) {
     console.error('Error getting last major stat content:', error);
-    return []; // Return an empty array on error
+    return ''; // Return an empty string on error
   }
 }

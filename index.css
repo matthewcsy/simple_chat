@@ -41,7 +41,7 @@ body {
   left: 0;
   right: 0;
   height: 30px;
-  background: linear-gradient(45deg, #4CAF50, #8BC34A);
+  background: linear-gradient(45deg, #007BFF, #8BC34A);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -67,7 +67,7 @@ body {
 
 .user-message {
   align-self: flex-end;
-  background-color: #4CAF50;
+  background-color: #007BFF;
   color: white;
   padding: 10px;
   border-radius: 10px;
@@ -115,7 +115,7 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  background-color: #4CAF50;
+  background-color: #007BFF;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -170,7 +170,7 @@ body {
 
 .toggle-container.active .toggle-icon {
   transform: rotate(180deg);
-  color: #4CAF50;
+  color: #007BFF;
 }
 
 @media (max-width: 767px) {
@@ -271,7 +271,7 @@ button.disabled {
   text-align: center;
   font-size: 24px;
   margin: 0 5px;
-  border: 2px solid #4CAF50;
+  border: 2px solid #007BFF;
   border-radius: 5px;
 }
 
@@ -302,7 +302,7 @@ button.disabled {
   border-radius: 50%;
   /* Make buttons circular */
   font-size: 24px;
-  background-color: #4CAF50;
+  background-color: #007BFF;
   color: white;
   border: none;
   cursor: pointer;
