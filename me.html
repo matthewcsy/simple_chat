@@ -28,14 +28,28 @@
         }
         .photo-section {
             flex: 1;
-            background: linear-gradient(45deg, #1656cc, #5073b3);
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
 			overflow:hidden;
 			min-height:400px;
-        }
+		 background: linear-gradient(to bottom, #0077b6, #005a9e, #003366);
+  background-size: 100% 400%;
+  animation: sky-gradient 15s ease infinite;
+}
+
+@keyframes sky-gradient {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
         .profile-section {
             flex: 2;
             padding: 40px;
