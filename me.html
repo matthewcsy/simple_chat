@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matthew Chan - matthewcsy.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Open Sans", sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            background: white;
+            position: relative;
+        }
+        .photo-section {
+            flex: 1;
+            background: linear-gradient(45deg, #1656cc, #5073b3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+			overflow:hidden;
+			min-height:400px;
+        }
+        .profile-section {
+            flex: 2;
+            padding: 40px;
+            position: relative;
+			padding-left:140px;
+			align-content:center;
+        }
+        .profile-picture {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid white;
+            position: absolute;
+            top: 50%; /* Adjust as needed */
+            left: 0px; /* Position it to overlap */
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10; /* Ensures it overlaps */
+        }
+        h1, p {
+            position: relative;
+            z-index: 5; /* Keeps text above background */
+        }
+        .open-sans-custom {
+            font-family: "Open Sans", sans-serif;
+            font-weight: 400; /* Adjust weight as needed */
+            font-style: normal;
+        }
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+            .profile-section {
+                padding: 20px;
+				padding-top:70px;
+            }
+            .profile-picture {
+                width: 120px;
+                height: 120px;
+                left: calc(50%);
+				top:0px;
+            }
+        }
+		
+		    .social-links {
+            margin-top: 20px;
+        }
+        .social-links a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+        }
+		
+		#viewport{
+  
+
+        background-image: linear-gradient(
+    to top,
+    rgb(69, 132, 180) 28%,
+    rgb(31, 71, 120) 64%
+);
+      }
+
+      #world {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -256px;
+        margin-top: -256px;
+        height: 512px;
+        width: 512px;
+        //border: 1px solid rgb( 255, 0, 0 );
+        -webkit-transform-style: preserve-3d;
+        -moz-transform-style: preserve-3d;
+        -o-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        pointer-events: none;
+      }
+
+      #world div {
+        -webkit-transform-style: preserve-3d;
+        -moz-transform-style: preserve-3d;
+        -o-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+      }
+
+      .cloudBase {
+        //border: 1px solid #ff00ff;
+        position: absolute;
+        left: 256px;
+        top: 256px;
+        width: 20px;
+        height: 20px;
+        margin-left: -10px;
+        margin-top: -10px;
+      }
+
+      .cloudLayer {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 256px;
+        height: 256px;
+        margin-left: -128px;
+        margin-top: -128px;
+        -webkit-transition: opacity 0.5s ease-out;
+        -moz-transition: opacity 0.5s ease-out;
+        -o-transition: opacity 0.5s ease-out;
+        transition: opacity 0.5s ease-out;
+      }
+
+      #options {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 10px;
+        padding: 20px;
+        width: 400px;
+        background-color: rgba(0, 0, 0, 0.4);
+        border-radius: 5px;
+      }
+
+      #optionsContent {
+        margin-top: 20px;
+        -webkit-transition: all 1s ease-out;
+        -moz-transition: all 1s ease-out;
+        -o-transition: all 1s ease-out;
+        transition: all 1s ease-out;
+      }
+
+      h1 {
+        font-family: "Lato", sans-serif;
+      }
+
+      h2 {
+        font-family: "Lato", sans-serif;
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin-bottom: 20px;
+      }
+
+      .actions {
+        margin-bottom: 20px;
+      }
+
+      #textureList li {
+        clear: both;
+        list-style-type: none;
+        position: relative;
+        height: 35px;
+        padding-top: 10px;
+      }
+
+      #textureList li span {
+        text-transform: capitalize;
+      }
+
+      #textureList div {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      #textureList li a {
+        float: left;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      #textureControls {
+        display: none;
+      }
+
+      #closeBtn {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+      }
+
+      .presets {
+      }
+
+      .presets a {
+        float: left;
+      }
+
+      .nope {
+        text-decoration: line-through;
+      }
+
+      :-moz-full-screen #options {
+        display: none;
+      }
+      :-webkit-full-screen #options {
+        display: none;
+      }
+      :full-screen #options {
+        display: none;
+      }
+    </style>
+
+	
+</head>
+<body>
+    <div class="container">
+        <div class="photo-section" id="photo-section">
+		<div id="viewport" >
+			  <div id="world" ></div>
+			</div>
+			</div>
+
+        <div class="profile-section">
+            <div class="profile-picture">
+                <img src="me.jpg" alt="Profile Picture" style="width: 100%; height: 100%; border-radius: 50%;">
+            </div>
+            <h1 class="open-sans-custom">Matthew Chan</h1>
+            <p class="open-sans-custom">Networking Specialist</p>
+            <p class="open-sans-custom">I’m Matthew, a cloud networking expert who knows the ins and outs of enterprise, telco, cloud, and internet networking.I’m well-versed in key technologies such as VLANs, MPLS, and BGP. My experience includes leading projects at AWS, where I help companies optimize their networks and drive growth. I focus on blending technical knowledge with strategic insights to create effective solutions for modern challenges.</p>
+			
+			<p class="open-sans-custom">Web Developer</p>
+            <p class="open-sans-custom">I’m a technology enthusiast with a passion for AI and a love for J-Pop. I’ve traveled to 23 countries, immersing myself in diverse cultures. Based in Hong Kong, I enjoy sharing my interests with my daughter and creating lasting memories. As a devoted churchgoer, I balance my tech interests and family life, fostering curiosity in every adventure.</p>
+
+			<div class="social-links">
+        <a href="https://www.instagram.com/matthewcsy/" target="_blank" title="Instagram">
+            <i class="fab fa-instagram"></i>
+        <a href="https://www.linkedin.com/in/matthewcsy/" target="_blank" title="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://x.com/matthewcsy" target="_blank" title="Twitter">
+            <i class="fab fa-twitter"></i>
+        </a>
+    </div>
+        </div>
+    </div>
+<script>
+      (function () {
+        var lastTime = 0;
+        var vendors = ["ms", "moz", "webkit", "o"];
+        for (
+          var x = 0;
+          x < vendors.length && !window.requestAnimationFrame;
+          ++x
+        ) {
+          window.requestAnimationFrame =
+            window[vendors[x] + "RequestAnimationFrame"];
+          window.cancelRequestAnimationFrame =
+            window[vendors[x] + "CancelRequestAnimationFrame"];
+        }
+
+        if (!window.requestAnimationFrame)
+          window.requestAnimationFrame = function (callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function () {
+              callback(currTime + timeToCall);
+            }, timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+          };
+
+        if (!window.cancelAnimationFrame)
+          window.cancelAnimationFrame = function (id) {
+            clearTimeout(id);
+          };
+      })();
+
+      var layers = [],
+        objects = [],
+        textures = [],
+        world = document.getElementById("world"),
+        viewport = document.getElementById("viewport"),
+        d = 0,
+        p = 400,
+        worldXAngle = 0,
+        worldYAngle = 0,
+        computedWeights = [];
+
+      var links = document.querySelectorAll("a[rel=external]");
+      for (var j = 0; j < links.length; j++) {
+        var a = links[j];
+        a.addEventListener(
+          "click",
+          function (e) {
+            window.open(this.href, "_blank");
+            e.preventDefault();
+          },
+          false
+        );
+      }
+
+      viewport.style.webkitPerspective = p;
+      viewport.style.MozPerspective = p + "px";
+      viewport.style.oPerspective = p;
+      viewport.style.perspective = p;
+
+      textures = [
+        { name: "white cloud", file: "cloud.png", opacity: 1, weight: 0 },
+
+      ];
+
+      
+
+
+      generate();
+
+
+      
+
+      
+
+      var optionsContent = document.getElementById("optionsContent");
+      
+
+      
+
+      function createCloud() {
+        var div = document.createElement("div");
+        div.className = "cloudBase";
+        var x = 256 - Math.random() * 512;
+        var y = 256 - Math.random() * 512;
+        var z = 128 - Math.random() * 512;
+        var t =
+          "translateX( " +
+          x +
+          "px ) translateY( " +
+          y +
+          "px ) translateZ( " +
+          z +
+          "px )";
+        div.style.webkitTransform = div.style.MozTransform = div.style.oTransform = div.style.transform = t;
+        world.appendChild(div);
+
+        for (var j = 0; j < 5 + Math.round(Math.random() * 10); j++) {
+          var cloud = document.createElement("img");
+          cloud.style.opacity = 0;
+          var r = Math.random();
+          var src = "cloud.png";
+          for (var k = 0; k < computedWeights.length; k++) {
+            if (r >= computedWeights[k].min && r <= computedWeights[k].max) {
+              (function (img) {
+                img.addEventListener("load", function () {
+                  img.style.opacity = 0.8;
+                });
+              })(cloud);
+              src = computedWeights[k].src;
+            }
+          }
+          if (computedWeights.length === 0) {
+            cloud.style.opacity = 0.8;
+          }
+          cloud.setAttribute("src", src);
+          cloud.className = "cloudLayer";
+
+          var x = 256 - Math.random() * 512;
+          var y = 256 - Math.random() * 512;
+          var z = 100 - Math.random() * 200;
+          var a = Math.random() * 360;
+          var s = 0.25 + Math.random();
+          x *= 0.2;
+          y *= 0.2;
+          cloud.data = {
+            x: x,
+            y: y,
+            z: z,
+            a: a,
+            s: s,
+            speed: 0.1 * Math.random(),
+          };
+          var t =
+            "translateX( " +
+            x +
+            "px ) translateY( " +
+            y +
+            "px ) translateZ( " +
+            z +
+            "px ) rotateZ( " +
+            a +
+            "deg ) scale( " +
+            s +
+            " )";
+          cloud.style.webkitTransform = cloud.style.MozTransform = cloud.style.oTransform = cloud.style.transform = t;
+
+          div.appendChild(cloud);
+          layers.push(cloud);
+        }
+
+        return div;
+      }
+
+      window.addEventListener("mousewheel", onContainerMouseWheel);
+      window.addEventListener("DOMMouseScroll", onContainerMouseWheel);
+
+      
+
+      window.addEventListener("keydown", function (e) {
+        if (e.keyCode == 32) generate();
+      });
+
+      window.addEventListener("mousemove", function (e) {
+        worldYAngle = -(0.5 - e.clientX / window.innerWidth) * 180;
+        worldXAngle = (0.5 - e.clientY / window.innerHeight) * 180;
+        //worldXAngle = .1 * ( e.clientY - .5 * window.innerHeight );
+        //worldYAngle = .1 * ( e.clientX - .5 * window.innerWidth );
+        updateView();
+      });
+
+      window.addEventListener("touchmove", function (e) {
+        var ptr = e.changedTouches.length;
+        while (ptr--) {
+          var touch = e.changedTouches[ptr];
+          worldYAngle = -(0.5 - touch.pageX / window.innerWidth) * 180;
+          worldXAngle = (0.5 - touch.pageY / window.innerHeight) * 180;
+          updateView();
+        }
+        e.preventDefault();
+      });
+
+      function generate() {
+        objects = [];
+        if (world.hasChildNodes()) {
+          while (world.childNodes.length >= 1) {
+            world.removeChild(world.firstChild);
+          }
+        }
+        computedWeights = [];
+        var total = 0;
+        for (var j = 0; j < textures.length; j++) {
+          if (textures[j].weight > 0) {
+            total += textures[j].weight;
+          }
+        }
+        var accum = 0;
+        for (var j = 0; j < textures.length; j++) {
+          if (textures[j].weight > 0) {
+            var w = textures[j].weight / total;
+            computedWeights.push({
+              src: textures[j].file,
+              min: accum,
+              max: accum + w,
+            });
+            accum += w;
+          }
+        }
+        for (var j = 0; j < 5; j++) {
+          objects.push(createCloud());
+        }
+      }
+
+      function updateView() {
+        var t =
+          "translateZ( " +
+          d +
+          "px ) rotateX( " +
+          worldXAngle +
+          "deg) rotateY( " +
+          worldYAngle +
+          "deg)";
+        world.style.webkitTransform = world.style.MozTransform = world.style.oTransform = world.style.transform = t;
+      }
+
+      function onContainerMouseWheel(event) {
+        event = event ? event : window.event;
+        d = d - (event.detail ? event.detail * -5 : event.wheelDelta / 8);
+        updateView();
+      }
+
+      function orientationhandler(e) {
+        if (!e.gamma && !e.beta) {
+          e.gamma = -(e.x * (180 / Math.PI));
+          e.beta = -(e.y * (180 / Math.PI));
+        }
+
+        var x = e.gamma;
+        var y = e.beta;
+
+        worldXAngle = y;
+        worldYAngle = x;
+        updateView();
+      }
+
+      function update() {
+        for (var j = 0; j < layers.length; j++) {
+          var layer = layers[j];
+          layer.data.a += layer.data.speed;
+          var t =
+            "translateX( " +
+            layer.data.x +
+            "px ) translateY( " +
+            layer.data.y +
+            "px ) translateZ( " +
+            layer.data.z +
+            "px ) rotateY( " +
+            -worldYAngle +
+            "deg ) rotateX( " +
+            -worldXAngle +
+            "deg ) rotateZ( " +
+            layer.data.a +
+            "deg ) scale( " +
+            layer.data.s +
+            ")";
+          layer.style.webkitTransform = layer.style.MozTransform = layer.style.oTransform = layer.style.transform = t;
+          //layer.style.webkitFilter = 'blur(5px)';
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      update();
+    </script>
+</body>
+</html>
