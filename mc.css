@@ -199,13 +199,12 @@ body {
   }
 
   .input-area {
-    flex-direction: column;
     /* Stack input elements */
 	padding:0px;
   }
 
   .input-area textarea {
-    width: 95%;
+    width: 85%;
     /* Make textarea full width */
     height: 45px;
 	font-size: 16px; 
@@ -215,7 +214,7 @@ body {
     font-size: 16px; /* Set font size to prevent zoom on focus */
 }
   .input-area button {
-    width: 100%;
+    width: 13%;
     /* Make button full width */
   }
 
