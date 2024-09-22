@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot</title>
   <link rel="stylesheet" href="mc.css">
   <!-- Include Font Awesome CSS -->
@@ -50,7 +50,9 @@
     <div class="input-container">
       <div class="input-area">
         <textarea id="user-input" placeholder="Enter Your Message ..."></textarea>
-        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+            <button id="send-button"  onclick="sendMessage()">
+				<i class="fa fa-paper-plane" id="send-icon"></i>
+			</button>
       </div>
 
     </div>
@@ -75,12 +77,25 @@
           <span class="stats-value" id="chatbot-response-stats">0 words</span>
         </div>
       </div>
+	  <div class="major-event-container">
+        <h3>Major Events:</h3>
+        <div id="major-event-content"></div>
+      </div>
+      <div class="major-stat-container">
+        <h3>Major Stats:</h3>
+        <div id="major-stat-content"></div>
+      </div>
       <div class="llm-container">
         <label for="llm-select">Select LLM Model:</label>
         <select id="llm-select">
-          <option value="meta-llama/llama-3-8b-instruct:free">LLaMA 3 8B</option>
-          <option value="nousresearch/hermes-3-llama-3.1-405b:free">Hermes 3 405B</option>
-          <option value="openchat/openchat-7b:free">Openchat 7B</option>
+          <option value="mistralai/mistral-nemo">Nemo</option>
+          <option value="deepseek/deepseek-chat">Deepseek</option>
+          <option value="openchat/openchat-7b">Openchat</option>
+		  <option value="nousresearch/hermes-3-llama-3.1-405b">Hermes</option>
+		  <option value="cohere/command-r-08-2024">Cohere</option>
+		  
+		  
+		  
         </select>
       </div>
       <div class="btn-container">

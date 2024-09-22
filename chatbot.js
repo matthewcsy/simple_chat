@@ -51,39 +51,77 @@ function formatMessage(message) {
   return message;
 }
 
+function getRandomScenario() {
+    const outfits = ["School Uniform", "Office Suit", "Nurse", "Cheerleader", "Maid", "Bikini", "lace lingerie", "Leather", "competitive swimsuit", "flight attendant", "teacher"];
+    const locations = ["Home", "Office", "Hospital", "School", "Car", "Alley", "Hotel", "Changing Room", "Pool", "Beach", "Library", "Private Jet", "Store", "Gym", "Public Restroom"];
+
+    const randomOutfit = outfits[Math.floor(Math.random() * outfits.length)];
+    const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+
+    return `You propse to meet wearing a ${randomOutfit} at the ${randomLocation}.`;
+}
+
+
 // Function to send a message to the chatbot
 function sendMessage() {
-  const userInput = document.getElementById('user-input').value;
-  document.getElementById('user-input').value = '';
+    const inputField = document.getElementById('user-input');
+    let userInput = inputField.value.trim();
 
-  // Disable input and button
-  disableInput();
+    const sendIcon = document.getElementById('send-icon');
 
-  if (userInput === '') {
-    enableInput(); // Re-enable if input is empty
-    return;
-  }
 
-  const systemPrompt = document.getElementById('system-prompt-textarea').value.trim();
+    // Check if the input is empty
+    if (userInput === '') {
+        // Retrieve the last sent input from localStorage
+        userInput = localStorage.getItem('last-sent-input') || ''; // Default to empty if not found
+        if (userInput === '') {
+            console.warn('No previous input found.'); // Warn if no previous input exists
+            return; // Exit the function if there's still no input
+        } else {
+            // Change icon to fa-refresh if there's a last sent input
+            sendIcon.classList.remove('fa-paper-plane');
+            sendIcon.classList.add('fa-refresh');
+        }
+    } else {
+        // Store the current input as the last sent input
+        localStorage.setItem('last-sent-input', userInput);
+        sendIcon.classList.remove('fa-refresh');
+        sendIcon.classList.add('fa-paper-plane'); // Reset to paper plane
+    }
 
-  const userMessageElement = document.createElement('div');
-  userMessageElement.classList.add('user-message');
-  userMessageElement.innerHTML = formatMessage(userInput);
-  document.getElementById('chatbot-messages').appendChild(userMessageElement);
-  const blankDefaultElement = document.getElementById('blank_default');
-  if (blankDefaultElement) {
-    blankDefaultElement.style.display = 'none'; // Only hide if the element exists
-	}
+    inputField.value = ''; // Clear the input field
 
-  // Scroll to the last user message
-  scrollToLastMessage(userMessageElement);
+    // Disable input and button
+    disableInput();
 
-  // Call the sendMessageToAPI function from the chatbot-api.js file
-  sendMessageToAPI(userInput, systemPrompt).then(() => {
-    // After the API call, enable the input again
-    enableInput();
-  });
+    const systemPrompt = document.getElementById('system-prompt-textarea').value.trim();
+
+    const userMessageElement = document.createElement('div');
+    userMessageElement.classList.add('user-message');
+    userMessageElement.innerHTML = formatMessage(userInput);
+    document.getElementById('chatbot-messages').appendChild(userMessageElement);
+
+    const blankDefaultElement = document.getElementById('blank_default');
+    if (blankDefaultElement) {
+        blankDefaultElement.style.display = 'none'; // Only hide if the element exists
+    }
+
+    // Scroll to the last user message
+    scrollToLastMessage(userMessageElement);
+
+    // Call the sendMessageToAPI function from the chatbot-api.js file
+    sendMessageToAPI(userInput, systemPrompt).then(() => {
+        // After the API call, enable the input again
+        enableInput();
+    });
 }
+
+// Add event listener to the input field
+document.getElementById('user-input').addEventListener('input', function() {
+    const sendIcon = document.getElementById('send-icon');
+    sendIcon.classList.remove('fa-refresh');
+    sendIcon.classList.add('fa-paper-plane'); // Change icon back to paper plane when typing
+});
 
 function disableInput() {
   const inputField = document.getElementById('user-input');
@@ -101,18 +139,23 @@ function disableInput() {
 }
 
 function enableInput() {
-  const inputField = document.getElementById('user-input');
-  const sendButton = document.querySelector('.input-area button');
+    const inputField = document.getElementById('user-input');
+    const sendButton = document.querySelector('.input-area button');
+    const sendIcon = sendButton.querySelector('i'); // Assuming the icon is inside the button
 
-  if (inputField && sendButton) {
-    inputField.disabled = false; // Re-enable the textarea
-    sendButton.disabled = false;  // Re-enable the button
+    if (inputField && sendButton && sendIcon) {
+        inputField.disabled = false; // Re-enable the textarea
+        sendButton.disabled = false;  // Re-enable the button
 
-    inputField.classList.remove('disabled'); // Optional: Remove class for styling
-    sendButton.classList.remove('disabled'); // Optional: Remove class for styling
-  } else {
-    console.error('Input field or send button not found.');
-  }
+        inputField.classList.remove('disabled'); // Optional: Remove class for styling
+        sendButton.classList.remove('disabled'); // Optional: Remove class for styling
+
+        // Change the icon from paper plane to refresh
+        sendIcon.classList.remove('fa-paper-plane');
+        sendIcon.classList.add('fa-refresh');
+    } else {
+        console.error('Input field, send button, or send icon not found.');
+    }
 }
 
 // Function to initialize the PIN input and keypad
@@ -337,31 +380,36 @@ async function sendMessageToAPI(userInput, systemPrompt) {
 	
 	let llm_selected; // Declare once in the outer scope
 
-const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
+	const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
 
-// Check if the current page is mc.html before toggling
-if (currentPage === 'mc.html' || currentPage === 'chatbot.html') {
-    llm_selected = 'nousresearch/hermes-3-llama-3.1-405b'; // Assign value if condition is met
-} else {
-    llm_selected = llmSelectElement.value; // Assign value from element otherwise
-}
+	// Check if the current page is chatbot.html to force llm
+    if (currentPage === 'chatbot.html') {
+      llm_selected = 'nousresearch/hermes-3-llama-3.1-405b:free';
+    } else {
+      llm_selected = llmSelectElement.value;
+    }
 
     // Get the last 5 chatbot responses
     const lastXResponses = await getLastXResponses(5);
 
     // Get the last 5 major event contents
     const lastXMajorEventContent = await getLastXMajorEventContent();
+	
+	// Get the continuation count
+    let continuationCount = parseInt(localStorage.getItem("continuation_count")) || 0;
 
 
 
-    // Append 
+    // Check if continuation_count is more than 9
+    let updatedSystemPrompt = systemPrompt;
+    if (continuationCount > 9) {
+      const randomScenario = await getRandomScenario(); // Assuming this is a defined function
+      updatedSystemPrompt += `\n\nThe converation is getting boring, ${randomScenario}`; // Append the random scenario
+	  localStorage.setItem("continuation_count", 2);
+    }
 
-    const updatedSystemPrompt = `${systemPrompt}
-\n\nHere are the last 5 responses from the chatbot:
-${lastXResponses.join('\n')}
-
-\nHere are the last 5 major event contents:
-${lastXMajorEventContent.join('\n')}`;
+    // Append existing data to the updatedSystemPrompt
+    updatedSystemPrompt += `\n\nHere are the last 5 responses from the chatbot:\n${lastXResponses}\n\nHere are the character pass major events:\n${lastXMajorEventContent.join('\n')}`;
 
 
 
@@ -408,9 +456,9 @@ ${lastXMajorEventContent.join('\n')}`;
     // Update the word counts
     updateWordCount(userInput, data.choices[0].message.content);
 
-    if (currentPage === 'chatbot.html') {
+    if (currentPage === 'mc.html') {
       await postAPIsystemAction(data.choices[0].message.content, 'major-event-content');
-      await postAPIsystemAction(data.choices[0].message.content, 'major-stat-content');
+     
     }
 
 
@@ -451,13 +499,24 @@ async function getLastXResponses(x) {
       request.onerror = (event) => reject(event.target.error);
     });
 
+    // Get the last X responses
     const lastXResponses = allMessages.slice(-x).map(message => message.chatbotResponse);
-    return lastXResponses;
+
+    // Check if lastXResponses is an array
+    if (Array.isArray(lastXResponses)) {
+      // Join the responses with a separator
+      const separator = "\n---\n"; // Example separator
+      return lastXResponses.join(separator);
+    } else {
+      console.error('lastXResponses is not an array:', lastXResponses);
+      return ''; // Return an empty string if not an array
+    }
   } catch (error) {
     console.error('Error getting last X responses:', error);
-    return [];
+    return '';
   }
 }
+
 
 // Function to load chat history from IndexedDB
 async function loadChatHistoryFromIndexedDB() {
@@ -509,7 +568,7 @@ function displayChatHistory(chatHistory) {
 
       const botMessageElement = document.createElement('div');
       botMessageElement.classList.add('chat-message', 'chatbot-message');
-      botMessageElement.textContent = message.chatbotResponse;
+      botMessageElement.innerHTML = formatMessage(message.chatbotResponse); // Format chatbot response
       chatHistoryContainer.appendChild(botMessageElement);
     });
   }
@@ -637,30 +696,7 @@ async function openIndexedDB() {
       if (!db.objectStoreNames.contains('major-event-content')) {
         db.createObjectStore('major-event-content', { keyPath: 'id', autoIncrement: true });
       }
-      if (!db.objectStoreNames.contains('major-stat-content')) {
-        const objectStore = db.createObjectStore('major-stat-content', { keyPath: 'id', autoIncrement: true });
-        objectStore.createIndex('valueName', 'valueName', { unique: true }); // Create index for valueName
-
-        // Populate initial values if the store is empty
-        const initialStats = [
-          { valueName: 'kiss', value: 0 },
-          { valueName: 'dinner', value: 0 },
-          { valueName: 'hugs', value: 0 },
-          { valueName: 'sex', value: 0 },
-          { valueName: 'dates', value: 0 },
-          { valueName: 'vacations', value: 0 },
-          { valueName: 'gifts', value: 0 },
-          { valueName: 'movies', value: 0 },
-          { valueName: 'surprises', value: 0 },
-          { valueName: 'laugh', value: 0 },
-          { valueName: 'cum_in_body', value: 0 }
-        ];
-
-        for (const stat of initialStats) {
-          objectStore.add(stat); // Add initial stats to the store
-        }
-        console.log('Initial major-stat-content populated');
-      }
+      
     };
 
     request.onsuccess = (event) => {
@@ -718,18 +754,19 @@ if (currentPage === 'mc.html') {
         let updatedSystemPrompt;
 
         if (scenario === 'major-event-content') {
-            const lastXMajorEventContent = await getLastXMajorEventContent();
-            updatedSystemPrompt = `You are a strict prompt analyzer. Based on the dialogue, determine if it’s a new event or a continuation of previous dialogue. If it’s new, provide a 10-15 word summary. If it continues, reply with #####. Here are the previous events: ${lastXMajorEventContent.join('\n')}`;
+           
+			// Get the last 5 chatbot responses
+			const lastXResponses = await getLastXResponses(5);
 
-        } else if (scenario === 'major-stat-content') {
-            const lastXMajorStatContent = await getLastXMajorStatContent();
+			// Get the last 5 major event contents
+			const lastXMajorEventContent = await getLastXMajorEventContent();
 
-            if (lastXMajorStatContent) {
-                updatedSystemPrompt = `You are a strict prompt analyzer. Analyze the statistics of characters' previous relationship based on the dialogue. Provide notable actions as statistics only. Format Example: Kiss: 0, Dinner: 1. No descriptions or explanations.Here are the previous statistics:\n${lastXMajorStatContent}`;
-            } else {
-                console.log('No valid statistics found. Using default prompt.');
-            }
-        } else {
+            updatedSystemPrompt = `You are a strict dialogue analyzer. Evaluate the conversation to determine if it introduces a new event or continues previous dialogue. If it’s new, provide a 10-15 word summary prefixed with @@@@@. If it’s a continuation, respond with #####.
+			
+			\n\n Here are the last 5 responses from the chatbot:${lastXResponses}
+			\n\n Here are the character pass major events:${lastXMajorEventContent.join('\n')}`;
+
+        }  else {
             throw new Error('Invalid scenario provided');
         }
 
@@ -762,10 +799,9 @@ if (currentPage === 'mc.html') {
         }
 
         const apiResponse = await response.json();
+		console.log('PostAPI User input:',userInput);
         console.log('PostAPI Event response:', apiResponse.choices[0].message.content);
 
-        // Update statistics from the API response
-        await updateStatisticsFromLLMResponse(apiResponse.choices[0].message.content);
 
         // Store the updated major-event-content in IndexedDB
         if (scenario === 'major-event-content') {
@@ -780,14 +816,7 @@ if (scenario === 'major-event-content') {
         majorEventContentElement.textContent = apiResponse.choices[0].message.content;
         console.log('Updated major-event-content element');
     }
-} else if (scenario === 'major-stat-content') {
-    const majorStatContentElement = document.getElementById('major-stat-content');
-    if (majorStatContentElement) {
-        majorStatContentElement.textContent = apiResponse.choices[0].message.content;
-        console.log('Updated major-stat-content element');
-    }
-}
-
+} 
         return apiResponse;
     } catch (error) {
         console.error('Error:', error);
@@ -808,11 +837,19 @@ async function storeMajorEventContentInIndexedDB(majorEventContent) {
 
     // Check if the input contains "##"
     if (majorEventContent.includes("##")) {
-      console.log('Previously Event, not stored');
+      // Increment continuation_count in local storage
+      let continuationCount = parseInt(localStorage.getItem("continuation_count")) || 0;
+      continuationCount += 1;
+      localStorage.setItem("continuation_count", continuationCount);
+      console.log('Continuation count incremented to:', continuationCount);
       return; // Exit the function without storing
+    } else {
+      // Reset continuation_count to 0 if "##" is not detected
+      localStorage.setItem("continuation_count", 0);
+      console.log('Continuation count reset to 0');
     }
 
-
+    majorEventContent = majorEventContent.replace(/@+/g, '').trim();
 
     // Trim the content if it exceeds 80 characters
     if (majorEventContent.length > 80) {
@@ -875,104 +912,5 @@ async function getLastXMajorEventContent() {
   } catch (error) {
     console.error('Error getting last major event content:', error);
     return [];
-  }
-}
-
-async function updateStatisticsFromLLMResponse(llmResponse) {
-    // Regular expression to match statistics in the format "Name: Value"
-    const regex = /(\w+):\s*(\d+)/g;
-    let match;
-
-    // Loop through all matches in the LLM response
-    while ((match = regex.exec(llmResponse)) !== null) {
-        const valueName = match[1].trim().toLowerCase(); // Normalize key
-        const value = parseInt(match[2], 10); // Convert value to integer
-
-        // Update the statistic in IndexedDB
-        await storeMajorStatInIndexedDB(valueName, value);
-    }
-
-    console.log('Statistics updated in IndexedDB based on LLM response.');
-}
-
-
-async function storeMajorStatInIndexedDB(valueName, value) {
-  try {
-    // Normalize valueName: lowercase and no spaces
-    const normalizedValueName = valueName.toLowerCase().replace(/\s+/g, '');
-
-    // Open the IndexedDB database
-    const dbRequest = await new Promise((resolve, reject) => {
-      const request = window.indexedDB.open('chatbot-db', 2);
-      request.onsuccess = (event) => {
-        resolve(event.target.result);
-      };
-      request.onerror = (event) => {
-        reject(event.target.error);
-      };
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains('major-stat-content')) {
-          const objectStore = db.createObjectStore('major-stat-content', { keyPath: 'id', autoIncrement: true });
-          objectStore.createIndex('valueName', 'valueName', { unique: true }); // Create index
-        }
-      };
-    });
-
-    const transaction = dbRequest.transaction(['major-stat-content'], 'readwrite');
-    const objectStore = transaction.objectStore('major-stat-content');
-
-    // Check if the valueName already exists
-    const existingEntry = await new Promise((resolve, reject) => {
-      const request = objectStore.index('valueName').get(normalizedValueName);
-      request.onsuccess = (event) => resolve(event.target.result);
-      request.onerror = (event) => reject(event.target.error);
-    });
-
-    if (existingEntry) {
-      // Update the existing entry's value
-      existingEntry.value += value; // Increment the value
-      await objectStore.put(existingEntry); // Use put to update
-      console.log('Major stat updated in IndexedDB');
-    } else {
-      // Add a new entry
-      await objectStore.add({ valueName: normalizedValueName, value });
-      console.log('Major stat stored in IndexedDB');
-    }
-
-    await transaction.complete;
-  } catch (error) {
-    console.error('Error storing Major stat in IndexedDB:', error);
-  }
-}
-
-
-
-async function getLastXMajorStatContent() {
-  try {
-    const dbRequest = window.indexedDB.open('chatbot-db', 2); // Use version 2
-
-    const db = await new Promise((resolve, reject) => {
-      dbRequest.onsuccess = (event) => resolve(event.target.result);
-      dbRequest.onerror = (event) => reject(event.target.error);
-    });
-
-    const transaction = db.transaction(['major-stat-content'], 'readonly');
-    const objectStore = transaction.objectStore('major-stat-content');
-
-    const allStats = await new Promise((resolve, reject) => {
-      const request = objectStore.getAll();
-      request.onsuccess = (event) => resolve(event.target.result);
-      request.onerror = (event) => reject(event.target.error);
-    });
-
-    // Format output into a readable string
-    const validStats = allStats.map(stat => `${stat.valueName.replace(/([A-Z])/g, ' $1').trim()}: ${stat.value}`);
-    const readableStats = validStats.join('\n'); // Join with newline for readability
-
-    return readableStats; // Return the formatted string
-  } catch (error) {
-    console.error('Error getting last major stat content:', error);
-    return ''; // Return an empty string on error
   }
 }
