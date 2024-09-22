@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matthew Chan - matthewcsy.com</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet">
     <style>
-        body {
+              frameset {
+            width: 100%;
+            height: 100vh; /* Full viewport height */
+        }
+
+        frame {
+            border: none; /* Remove default border */
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+        }
+		    body {
             font-family: "Open Sans", sans-serif;
             margin: 0;
             padding: 0;
@@ -32,31 +45,33 @@
             justify-content: center;
             align-items: center;
             position: relative;
-			overflow:hidden;
-			min-height:400px;
-		 background: linear-gradient(to bottom, #0077b6, #005a9e, #003366);
-  background-size: 100% 400%;
-  animation: sky-gradient 15s ease infinite;
-}
+            overflow:hidden;
+            min-height:400px;
+            background: linear-gradient(to bottom, #0077b6, #005a9e, #003366);
+            background-size: 100% 400%;
+            animation: sky-gradient 15s ease infinite;
+        }
 
-@keyframes sky-gradient {
-  0% {
-    background-position: 0% 0%;
-  }
-  50% {
-    background-position: 0% 100%;
-  }
-  100% {
-    background-position: 0% 0%;
-  }
-}
+        @keyframes sky-gradient {
+          0% {
+            background-position: 0% 0%;
+          }
+          50% {
+            background-position: 0% 100%;
+          }
+          100% {
+            background-position: 0% 0%;
+          }
+        }
+
         .profile-section {
             flex: 2;
             padding: 40px;
             position: relative;
-			padding-left:140px;
-			align-content:center;
+            padding-left:140px;
+            align-content:center;
         }
+        
         .profile-picture {
             width: 180px;
             height: 180px;
@@ -69,28 +84,31 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             z-index: 10; /* Ensures it overlaps */
         }
+
         h1, p {
             position: relative;
             z-index: 5; /* Keeps text above background */
         }
+
         .open-sans-custom {
             font-family: "Open Sans", sans-serif;
             font-weight: 400; /* Adjust weight as needed */
             font-style: normal;
         }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
             }
             .profile-section {
                 padding: 20px;
-				padding-top:70px;
+				        padding-top:70px;
             }
             .profile-picture {
                 width: 120px;
                 height: 120px;
                 left: calc(50%);
-				top:0px;
+				        top:0px;
             }
         }
 		
@@ -103,16 +121,6 @@
             color: #333;
             font-size: 24px;
         }
-		
-		#viewport{
-  
-
-        background-image: linear-gradient(
-    to top,
-    rgb(69, 132, 180) 28%,
-    rgb(31, 71, 120) 64%
-);
-      }
 
       #world {
         position: absolute;
@@ -122,7 +130,6 @@
         margin-top: -256px;
         height: 512px;
         width: 512px;
-        //border: 1px solid rgb( 255, 0, 0 );
         -webkit-transform-style: preserve-3d;
         -moz-transform-style: preserve-3d;
         -o-transform-style: preserve-3d;
@@ -138,7 +145,6 @@
       }
 
       .cloudBase {
-        //border: 1px solid #ff00ff;
         position: absolute;
         left: 256px;
         top: 256px;
@@ -256,40 +262,53 @@
       }
     </style>
 
-	
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="photo-section" id="photo-section">
-		<div id="viewport" >
-			  <div id="world" ></div>
-			</div>
-			</div>
-
-        <div class="profile-section">
-            <div class="profile-picture">
-                <img src="me.jpg" alt="Profile Picture" style="width: 100%; height: 100%; border-radius: 50%;">
-            </div>
-            <h1 class="open-sans-custom">Matthew Chan</h1>
-            <p class="open-sans-custom">Networking Specialist</p>
-            <p class="open-sans-custom">I’m Matthew, a cloud networking expert who knows the ins and outs of enterprise, telco, cloud, and internet networking.I’m well-versed in key technologies such as VLANs, MPLS, and BGP. My experience includes leading projects at AWS, where I help companies optimize their networks and drive growth. I focus on blending technical knowledge with strategic insights to create effective solutions for modern challenges.</p>
-			
-			<p class="open-sans-custom">Web Developer</p>
-            <p class="open-sans-custom">I’m a technology enthusiast with a passion for AI and a love for J-Pop. I’ve traveled to 23 countries, immersing myself in diverse cultures. Based in Hong Kong, I enjoy sharing my interests with my daughter and creating lasting memories. As a devoted churchgoer, I balance my tech interests and family life, fostering curiosity in every adventure.</p>
-
-			<div class="social-links">
-        <a href="https://www.instagram.com/matthewcsy/" target="_blank" title="Instagram">
-            <i class="fab fa-instagram"></i>
-        <a href="https://www.linkedin.com/in/matthewcsy/" target="_blank" title="LinkedIn">
-            <i class="fab fa-linkedin"></i>
-        </a>
-        <a href="https://x.com/matthewcsy" target="_blank" title="Twitter">
-            <i class="fab fa-twitter"></i>
-        </a>
-    </div>
+      <div class="photo-section" id="photo-section">
+        <div id="viewport">
+          <div id="world"></div>
         </div>
-    </div>
-<script>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-picture">
+          <img src="me.jpg" alt="Profile Picture"
+            style="width: 100%; height: 100%; border-radius: 50%;">
+        </div>
+        <h1 class="open-sans-custom">Matthew Chan</h1>
+        <p class="open-sans-custom">Networking Specialist</p>
+        <p class="open-sans-custom">I’m Matthew, a cloud networking expert who
+          knows the ins and outs of enterprise, telco, cloud, and internet
+          networking.I’m well-versed in key technologies such as VLANs, MPLS,
+          and BGP. My experience includes leading projects at AWS, where I help
+          companies optimize their networks and drive growth. I focus on
+          blending technical knowledge with strategic insights to create
+          effective solutions for modern challenges.</p>
+
+        <p class="open-sans-custom">Web Developer</p>
+        <p class="open-sans-custom">I’m a technology enthusiast with a passion
+          for AI and a love for J-Pop. I’ve traveled to 23 countries, immersing
+          myself in diverse cultures. Based in Hong Kong, I enjoy sharing my
+          interests with my daughter and creating lasting memories. As a devoted
+          churchgoer, I balance my tech interests and family life, fostering
+          curiosity in every adventure.</p>
+
+        <div class="social-links">
+          <a href="https://www.instagram.com/matthewcsy/" target="_blank"
+            title="Instagram">
+            <i class="fab fa-instagram"></i>
+            <a href="https://www.linkedin.com/in/matthewcsy/" target="_blank"
+              title="LinkedIn">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://x.com/matthewcsy" target="_blank" title="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <script>
       (function () {
         var lastTime = 0;
         var vendors = ["ms", "moz", "webkit", "o"];
@@ -564,5 +583,5 @@
 
       update();
     </script>
-</body>
-</html>
+    </body>
+  </html>
