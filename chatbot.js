@@ -3,8 +3,7 @@ function toggleAdditionInfo() {
     const currentPage = window.location.pathname.split('/').pop(); // Get the current HTML file name
 
     const systemPromptContainer = document.querySelector('.system-prompt-container');
-    const wordcountContainer = document.querySelector('.wordcount-container');
-    const llmContainer = document.querySelector('.llm-container');
+    const wordcountContainer = document.querySelector('.wordcount-container');    
     const btnContainer = document.querySelector('.btn-container');
     const toggleContainer = document.querySelector('.toggle-container');
     
@@ -27,8 +26,17 @@ function toggleAdditionInfo() {
         
     }
 
-    if (llmContainer) {
-        llmContainer.classList.toggle('show');
+	if (currentPage === 'mc.html') {
+        const majorEventContainer = document.querySelector('.major-event-container');        
+        if (majorEventContainer) {
+            majorEventContainer.classList.toggle('show');
+        }
+    }
+	if (currentPage !== 'chatbot.html') {
+        const llmContainer = document.querySelector('.llm-container');
+		if (llmContainer) {
+			llmContainer.classList.toggle('show');
+		}
     }
     if (btnContainer) {
         btnContainer.classList.toggle('show');
@@ -232,7 +240,7 @@ function reconstructApiKey(pinHash) {
   if (currentPage === '' || currentPage === 'index.html' || currentPage === 'chatbot.html') {
     maskedKey = 'sk-or-v1-a844d4fd60de7e874d#9#25###b5aecc366500fb59fd252acad50461426c3613'; // Key for index.html
   } else if (currentPage === 'mc.html') {
-    maskedKey = 'sk-or-v1-7#f96cd507607d0cf9947e4f2efec14165#71fdecd545d2#979644a2cb6ec3a2'; // Key for chatbot.html
+    maskedKey = 'sk-or-v1-7#f96cd507607d0cf9947e4f2efec14165#71fdecd545d2#979644a2cb6ec3a2'; // Key for myself
   } else {
     console.error('No masked key found for this page.');
     return null; // Handle case where no key is found

@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot</title>
-  <link rel="stylesheet" href="chatbot.css">
+  <link rel="stylesheet" href="chatbot_chatbot.css">
   <!-- Include Font Awesome CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
@@ -34,7 +34,7 @@
     </div>
   </div>
   <div class="header">
-    <i class="fas fa-comments"></i>
+    <i class="fas fa-heart"> 三 上</i>
   </div>
 
   <div class="chatout-container">
@@ -48,15 +48,17 @@
 
   <div class="block_bottom">
     <div class="input-container">
-      <div class="input-area">
-        <textarea id="user-input" placeholder="Enter Your Message ..."></textarea>
-        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
-      </div>
-
-    </div>
-    <div class="toggle-container" onclick="toggleAdditionInfo()">
-      <i class="fas fa-angle-up toggle-icon"></i>
-    </div>
+	  <div class="input-area">
+		<textarea id="user-input" placeholder="Enter Your Message ..."></textarea>
+		<button id="send-button" onclick="sendMessage()">
+		  <i class="fa fa-paper-plane" id="send-icon"></i>
+		</button>
+		<div class="toggle-container" onclick="toggleAdditionInfo()">
+		  <i class="fas fa-cog toggle-icon"></i>
+		</div>
+	  </div>
+	</div>
+    
 
 
 
@@ -65,7 +67,25 @@
       <div class="system-prompt-container">
         <textarea id="system-prompt-textarea" placeholder="Enter Your System Prompt ..."></textarea>
       </div>
-      <div class="wordcount-container">
+      
+	  <div class="major-event-container">
+        <h3>Major Events:</h3>
+        <div id="major-event-content"></div>
+      </div>
+      <div class="llm-container">
+        <label for="llm-select">Select LLM Model:</label>
+        <select id="llm-select">
+          <option value="mistralai/mistral-nemo">Nemo</option>
+          <option value="deepseek/deepseek-chat">Deepseek</option>
+          <option value="openchat/openchat-7b">Openchat</option>
+		  <option value="nousresearch/hermes-3-llama-3.1-405b">Hermes</option>
+		  <option value="cohere/command-r-08-2024">Cohere</option>
+		  
+		  
+		  
+        </select>
+      </div>
+	  <div class="wordcount-container">
         <div class="stats-item">
           <span class="stats-label">User Input:</span>
           <span class="stats-value" id="user-input-stats">0 words</span>
@@ -75,21 +95,13 @@
           <span class="stats-value" id="chatbot-response-stats">0 words</span>
         </div>
       </div>
-      <div class="llm-container">
-        <label for="llm-select">Select LLM Model:</label>
-        <select id="llm-select">
-          <option value="meta-llama/llama-3-8b-instruct:free">LLaMA 3 8B</option>
-          <option value="nousresearch/hermes-3-llama-3.1-405b:free">Hermes 3 405B</option>
-          <option value="openchat/openchat-7b:free">Openchat 7B</option>
-        </select>
-      </div>
       <div class="btn-container">
         <button onclick="clearChatHistory()"><i class="fas fa-trash"></i> Clear History</button>
       </div>
     </div>
   </div>
   </div>
-  <script src="llama-tokenizer.js"></script>
+  <script src="chatbot_tokenizer.js"></script>
   <script src="chatbot.js"></script>
 
 </body>

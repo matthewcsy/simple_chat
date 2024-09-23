@@ -43,7 +43,7 @@ body {
   left: 0;
   right: 0;
   height: 30px;
-  background: linear-gradient(45deg, #0077ff, #66eeff);
+  background: linear-gradient(45deg, #ad1c09, #b3574b);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,7 +69,7 @@ body {
 
 .user-message {
   align-self: flex-end;
-  background-color: #0077ff;
+  background-color: #ad1c09;
   color: white;
   padding: 10px;
   border-radius: 10px;
@@ -117,7 +117,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;	
-  background-color: #0077ff;
+  background-color: #ad1c09;
   color: white;
   border: none;
   justify-content: center;
@@ -129,7 +129,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-    background-color: #b1c5fa; /* Lighter shade of green */
+    background-color: #b3574b; /* Lighter shade of red */
   color: white;
   border: none;
   justify-content: center;
@@ -195,7 +195,7 @@ body {
 
 .toggle-container.active .toggle-icon {
   transform: rotate(90deg);
-  color: #0077ff;
+  color: #ad1c09;
 }
 
 /* Ensure input fields have a minimum font size to prevent zoom */
@@ -323,7 +323,7 @@ button.disabled {
   text-align: center;
   font-size: 24px;
   margin: 0 5px;
-  border: 2px solid #0077ff;
+  border: 2px solid #ad1c09;
   border-radius: 5px;
 }
 
@@ -354,7 +354,7 @@ button.disabled {
   border-radius: 50%;
   /* Make buttons circular */
   font-size: 24px;
-  background-color: #0077ff;
+  background-color: #ad1c09;
   color: white;
   border: none;
   cursor: pointer;
