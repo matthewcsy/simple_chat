@@ -12,6 +12,7 @@ body {
 
 .chatout-container {
   display: flex;
+  width:100%
 }
 
 .stats-container {
@@ -114,13 +115,30 @@ body {
 .btn-container button {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;	
   background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 10px 20px;
+  justify-content: center;
   border-radius: 5px;
-  cursor: pointer;
+  padding:10px 20px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    background-color: #A5D6A7; /* Lighter shade of green */
+  color: white;
+  border: none;
+  justify-content: center;
+  border-radius: 5px;
+  width:6%
+}
+
+#system-prompt-textarea{
+	width:80%;
+	height:40px;
 }
 
 .btn-container button {
@@ -128,20 +146,31 @@ body {
 }
 
 .system-prompt-container,
-.wordcount-container,
-.llm-container,
-.btn-container,
 .major-event-container,
-.major-stat-container {
-  width: 43%;
-  display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px;
+.llm-container {
+  width: 95%; /* Wide blocks take the full width */
+  box-sizing: border-box;
+  margin-bottom: 10px; /* Space between blocks */
+}
+
+.wordcount-container,
+.btn-container {
+  width: 45%; /* Narrow blocks take half the width */
+  box-sizing: border-box;
+  margin-right: 10px; /* Space between blocks */
+}
+
+/* Additional styling for better appearance */
+.system-prompt-container,
+.major-event-container,
+.llm-container,
+.wordcount-container,
+.btn-container {
+  background-color: white; /* Background color for visibility */
+  padding: 15px; /* Padding for content */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  display:none;
 }
 
 
@@ -156,20 +185,15 @@ body {
   justify-content: space-between;
 }
 
-.toggle-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
+
 
 .toggle-icon {
-  font-size: 24px;
+  font-size: 16px;
   transition: transform 0.3s ease;
 }
 
 .toggle-container.active .toggle-icon {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
   color: #4CAF50;
 }
 
@@ -181,7 +205,7 @@ body {
 
 @media (max-width: 767px) {
   body {
-    font-size: 11px;
+    font-size: 13px;
     /* Slightly smaller font size for mobile */
     background-color: #444;
   }
@@ -214,7 +238,8 @@ body {
     font-size: 16px; /* Set font size to prevent zoom on focus */
 }
   .input-area button {
-    width: 13%;
+    width: 10%;
+	padding:0px;
     /* Make button full width */
   }
 
@@ -226,6 +251,22 @@ body {
   .chatbot-container {
     margin-top: 5px;
   }
+  
+  .system-prompt-container,
+.major-event-container,
+.llm-container {
+  width: 95%; /* Wide blocks take the full width */
+  box-sizing: border-box;
+  margin-bottom: 10px; /* Space between blocks */
+}
+
+.wordcount-container,
+.btn-container {
+  width: 44%; /* Narrow blocks take half the width */
+  box-sizing: border-box;
+  margin-right: 10px; /* Space between blocks */
+}
+
 }
 }
 

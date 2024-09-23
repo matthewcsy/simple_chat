@@ -48,17 +48,17 @@
 
   <div class="block_bottom">
     <div class="input-container">
-      <div class="input-area">
-        <textarea id="user-input" placeholder="Enter Your Message ..."></textarea>
-            <button id="send-button"  onclick="sendMessage()">
-				<i class="fa fa-paper-plane" id="send-icon"></i>
-			</button>
-      </div>
-
-    </div>
-    <div class="toggle-container" onclick="toggleAdditionInfo()">
-      <i class="fas fa-angle-up toggle-icon"></i>
-    </div>
+	  <div class="input-area">
+		<textarea id="user-input" placeholder="Enter Your Message ..."></textarea>
+		<button id="send-button" onclick="sendMessage()">
+		  <i class="fa fa-paper-plane" id="send-icon"></i>
+		</button>
+		<div class="toggle-container" onclick="toggleAdditionInfo()">
+		  <i class="fas fa-angle-right toggle-icon"></i>
+		</div>
+	  </div>
+	</div>
+    
 
 
 
@@ -67,23 +67,10 @@
       <div class="system-prompt-container">
         <textarea id="system-prompt-textarea" placeholder="Enter Your System Prompt ..."></textarea>
       </div>
-      <div class="wordcount-container">
-        <div class="stats-item">
-          <span class="stats-label">User Input:</span>
-          <span class="stats-value" id="user-input-stats">0 words</span>
-        </div>
-        <div class="stats-item">
-          <span class="stats-label">Chatbot Response:</span>
-          <span class="stats-value" id="chatbot-response-stats">0 words</span>
-        </div>
-      </div>
+      
 	  <div class="major-event-container">
         <h3>Major Events:</h3>
         <div id="major-event-content"></div>
-      </div>
-      <div class="major-stat-container">
-        <h3>Major Stats:</h3>
-        <div id="major-stat-content"></div>
       </div>
       <div class="llm-container">
         <label for="llm-select">Select LLM Model:</label>
@@ -97,6 +84,16 @@
 		  
 		  
         </select>
+      </div>
+	  <div class="wordcount-container">
+        <div class="stats-item">
+          <span class="stats-label">User Input:</span>
+          <span class="stats-value" id="user-input-stats">0 words</span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Chatbot Response:</span>
+          <span class="stats-value" id="chatbot-response-stats">0 words</span>
+        </div>
       </div>
       <div class="btn-container">
         <button onclick="clearChatHistory()"><i class="fas fa-trash"></i> Clear History</button>

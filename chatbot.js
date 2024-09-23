@@ -19,14 +19,12 @@ function toggleAdditionInfo() {
     // Check if the current page is chatbot.html before toggling
     if (currentPage === 'mc.html') {
         const majorEventContainer = document.querySelector('.major-event-container');
-        const majorStatContainer = document.querySelector('.major-stat-container');
+        
         
         if (majorEventContainer) {
             majorEventContainer.classList.toggle('show');
         }
-        if (majorStatContainer) {
-            majorStatContainer.classList.toggle('show');
-        }
+        
     }
 
     if (llmContainer) {
@@ -327,13 +325,13 @@ function loadSystemPromptFromLocalStorage() {
     // Check if the current page is chatbot.html
     if (currentPage === 'chatbot.html') {
         systemPromptTextarea.value = builtInSystemPrompt; // Set the built-in prompt
-        toggleAdditionInfo(); // Show the system prompt textarea
+        //toggleAdditionInfo(); // Show the system prompt textarea
     } else {
         const storedSystemPrompt = localStorage.getItem('system-prompt');
         
         if (storedSystemPrompt) {
             systemPromptTextarea.value = storedSystemPrompt; // Load from local storage if available
-            toggleAdditionInfo(); // Show the system prompt textarea
+           // toggleAdditionInfo(); // Show the system prompt textarea
         } else {
             systemPromptTextarea.value = ''; // Clear the textarea if no prompt is found
         }
@@ -580,33 +578,53 @@ async function clearChatHistory() {
     // Open the IndexedDB database
     const dbRequest = window.indexedDB.open('chatbot-db', 2);
 
-    // Clear the 'chat-messages' object store
     const db = await new Promise((resolve, reject) => {
-      dbRequest.onsuccess = function (event) {
+      dbRequest.onsuccess = (event) => {
         resolve(event.target.result);
       };
-      dbRequest.onerror = function (event) {
-        reject(event.target.errorCode);
+      dbRequest.onerror = (event) => {
+        reject(event.target.error);
       };
     });
 
-    const transaction = db.transaction(['chat-messages'], 'readwrite');
-    const objectStore = transaction.objectStore('chat-messages');
-    objectStore.clear();
-    await transaction.complete;
+    // Start a transaction to delete object stores
+    const transaction = db.transaction(['chat-messages', 'major-event-content'], 'readwrite');
 
-    // Update the chat history display
-    await updateChatHistoryDisplay();
+    // Create a promise to delete both object stores
+    await new Promise((resolve, reject) => {
+      transaction.oncomplete = () => {
+        console.log('All object stores deleted successfully');
+        resolve();
+      };
 
-    const chatbotmessagesContainer = document.getElementById('chatbot-messages');
-    if (chatbotmessagesContainer) {
-      chatHistoryContainer.innerHTML = '<div id="blank_default">Welcome. Please type and send a messsage.</div>';
-    }
+      transaction.onerror = (event) => {
+        console.error('Error during transaction:', event);
+        reject(event.target.error);
+      };
 
-    console.log('Chat history cleared');
+      // Delete the 'chat-messages' object store
+      const chatMessagesStore = transaction.objectStore('chat-messages');
+      chatMessagesStore.clear(); // Clear the store
+
+      // Delete the 'major-event-content' object store
+      const majorEventStore = transaction.objectStore('major-event-content');
+      majorEventStore.clear(); // Clear the store
+    });
+
+    // Update the UI or perform other actions here
+    const chatMessagesContainer = document.getElementById('chatbot-messages');
+		if (chatMessagesContainer) {
+		  chatMessagesContainer.innerHTML = '';
+		}
+
+	const chatHistoryContainer = document.getElementById('chat-history');
+		if (chatHistoryContainer) {
+		  chatHistoryContainer.innerHTML = '<div id="blank_default">Welcome. Please type and send a message.</div>';
+		}
+
   } catch (error) {
     console.error('Error clearing chat history:', error);
-  }
+  } 
 }
 
 // Function to count the number of words in a given text.
