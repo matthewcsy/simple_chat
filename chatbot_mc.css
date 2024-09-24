@@ -56,7 +56,8 @@ body {
 }
 
 .chatbot-messages,
-.chat-history {
+.chat-history,
+.loading-indicator {
   display: flex;
   flex-direction: column;
   gap: 10px;
