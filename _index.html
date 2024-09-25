@@ -105,14 +105,10 @@
       <div class="llm-container">
         <label for="llm-select">Select LLM Model:</label>
         <select id="llm-select">
-		  <option value="nousresearch/hermes-3-llama-3.1-405b">Hermes</option>
-          <option value="mistralai/mistral-nemo">Nemo</option>
-          <option value="deepseek/deepseek-chat">Deepseek</option>
-          <option value="openchat/openchat-7b">Openchat</option>
-		  <option value="cohere/command-r-08-2024">Cohere</option>
-		  
-		  
-		  
+          <option value="mistralai/mistral-7b-instruct:free">Mistal</option>
+          <option value="meta-llama/llama-3.1-8b-instruct:free">Meta</option>
+          <option value="microsoft/phi-3-mini-128k-instruct:free">Microsoft</option>	  
+	  
         </select>
       </div>
 	  <div class="wordcount-container">
@@ -127,71 +123,11 @@
       </div>
       <div class="btn-container">
         <button onclick="clearChatHistory()"><i class="fas fa-trash"></i> Clear History</button>
-		  <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-  <button id="signout_button" onclick="updatefromGS()">Get Online Copy</button>
+
       </div>
     </div>
   </div>
   </div>
-
-
-  <script>
-    let gapiInited = false;
-    let gisInited = false;
-
-    function gapiLoaded() {
-      gapi.load('client', initializeGapiClient);
-    }
-
-    async function initializeGapiClient() {
-      // Wait until the API key is available
-      await waitForApiKey();
-
-      await gapi.client.init({
-        apiKey: GOOGLE_SHEETS_API_KEY, // Use the dynamically set API key
-        discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-      });
-      gapiInited = true;
-      maybeEnableButtons(); // Enable buttons if both APIs are initialized
-    }
-
-    function gisLoaded() {
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: '94066245249-k9jtirbbprukvseveat16r3qgtnrahgo.apps.googleusercontent.com', 
-        scope: 'https://www.googleapis.com/auth/spreadsheets',
-        callback: '', // Define the callback later
-      });
-      gisInited = true;
-      maybeEnableButtons();
-    }
-
-    function maybeEnableButtons() {
-      if (gapiInited && gisInited) {
-        document.getElementById('authorize_button').style.visibility = 'visible';
-        document.getElementById('signout_button').style.visibility = 'visible';
-      }
-    }
-
-    // Function to wait for the API key to be initialized
-    async function waitForApiKey() {
-      return new Promise((resolve) => {
-        const checkApiKey = setInterval(() => {
-          if (typeof GOOGLE_SHEETS_API_KEY !== 'undefined') {
-            clearInterval(checkApiKey);
-            resolve();
-          }
-        }, 100); // Check every 100ms
-      });
-    }
-
-    // Call this function when the window loads
-    window.onload = function() {
-       initializeChatbot();
-	   initializePinInput(); // Ensure this is called to set the API key
-    };
-	</script>
-  <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-  <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 
   <script src="chatbot_tokenizer.js"></script>
   <script src="chatbot.js"></script>

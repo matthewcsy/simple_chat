@@ -5,9 +5,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot</title>
-  <link rel="stylesheet" href="chatbot_chatbot.css">
+  <link rel="stylesheet" href="chatbot.css">
   <!-- Include Font Awesome CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+  .header {
+    background: linear-gradient(45deg, #ad1c09, #b38681);
+    color: white;
+  }
+
+  .user-message {
+    background-color: #ad1c09;
+    color: white;
+  }
+
+  .input-area button,
+  .btn-container button,
+  .toggle-container {
+    background-color: #ad1c09;
+    color: white;
+  }
+
+  .toggle-container.active .toggle-icon {
+    color: #b38681;
+  }
+
+  .key {
+    background-color: #ad1c09;
+    color: white;
+  }
+
+  .pin-box {
+    border: 2px solid #ad1c09;
+  }
+</style>
 </head>
 
 <body>
@@ -34,7 +65,7 @@
     </div>
   </div>
   <div class="header">
-    <i class="fas fa-heart"> 三 上</i>
+    <i class="fas fa-heart"> 三 上 </i>
   </div>
 
   <div class="chatout-container">
@@ -49,7 +80,7 @@
   <div class="block_bottom">
     <div class="input-container">
 	  <div class="input-area">
-		<textarea id="user-input" placeholder="Enter Your Message ..."></textarea>
+		<input type="text" id="user-input" placeholder="Enter Your Message ..." autocomplete="off" />
 		<button id="send-button" onclick="sendMessage()">
 		  <i class="fa fa-paper-plane" id="send-icon"></i>
 		</button>
@@ -75,14 +106,8 @@
       <div class="llm-container">
         <label for="llm-select">Select LLM Model:</label>
         <select id="llm-select">
-          <option value="mistralai/mistral-nemo">Nemo</option>
-          <option value="deepseek/deepseek-chat">Deepseek</option>
-          <option value="openchat/openchat-7b">Openchat</option>
-		  <option value="nousresearch/hermes-3-llama-3.1-405b">Hermes</option>
-		  <option value="cohere/command-r-08-2024">Cohere</option>
-		  
-		  
-		  
+          <option value="nousresearch/hermes-3-llama-3.1-405b:free">Nemo</option>
+	  
         </select>
       </div>
 	  <div class="wordcount-container">
@@ -97,12 +122,21 @@
       </div>
       <div class="btn-container">
         <button onclick="clearChatHistory()"><i class="fas fa-trash"></i> Clear History</button>
+		  <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+  <button id="signout_button" onclick="updatefromGS()">Get Online Copy</button>
       </div>
     </div>
   </div>
-  </div>
+  </div>  
+  <script>
+   window.onload = function() {
+       initializeChatbot();
+	   initializePinInput(); // Ensure this is called to set the API key
+    };
+	</script>
   <script src="chatbot_tokenizer.js"></script>
   <script src="chatbot.js"></script>
+
 
 </body>
 
