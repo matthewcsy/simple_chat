@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milet Response</title>
+  <link rel="stylesheet" href="chatbot.css">
+  <!-- Include Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+  .header {
+    background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    color: white;
+  }
+
+  .user-message {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .input-area button,
+  .toggle-container {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .toggle-container.active .toggle-icon {
+    color: #4CAF50;
+  }
+
+  .key {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .pin-box {
+    border: 2px solid #4CAF50;
+  }
+</style>
+</head>
+
+<body>
+  <div id="pin-container" style="display: none;">
+    <div class="pin-inputs">
+      <input type="text" maxlength="1" class="pin-box" />
+      <input type="text" maxlength="1" class="pin-box" />
+      <input type="text" maxlength="1" class="pin-box" />
+      <input type="text" maxlength="1" class="pin-box" />
+    </div>
+    <div class="keypad">
+      <div class="keys">
+        <button class="key" data-value="1">1</button>
+        <button class="key" data-value="2">2</button>
+        <button class="key" data-value="3">3</button>
+        <button class="key" data-value="4">4</button>
+        <button class="key" data-value="5">5</button>
+        <button class="key" data-value="6">6</button>
+        <button class="key" data-value="7">7</button>
+        <button class="key" data-value="8">8</button>
+        <button class="key" data-value="9">9</button>
+        <button class="key" data-value="0">0</button>
+      </div>
+    </div>
+  </div>
+  <div class="header">
+    <i class="fas fa-heart"> m i l e t</i>
+  </div>
+
+  <div class="chatout-container">
+    <div class="chatbot-container">
+      <div class="chat-history" id="chat-history"></div>
+      <div class="chatbot-messages" id="chatbot-messages">
+        <!-- Existing messages will be added here -->
+      </div>
+    </div>
+  </div>
+
+  <div class="block_bottom">
+    <div class="input-container">
+	  <div class="input-area">
+		<input type="text" id="user-input" placeholder="Enter Your Message ..." autocomplete="off" />
+		<button id="send-button" onclick="sendMessage()">
+		  <i class="fa fa-paper-plane" id="send-icon"></i>
+		</button>
+	  </div>
+	</div>
+    
+
+  </div>
+  </div>
+  <script src="
+https://cdn.jsdelivr.net/npm/oauth-1.0a@2.2.6/oauth-1.0a.min.js
+"></script>
+  <script src="milet.js"></script>
+
+
+</body>
+
+</html>
